@@ -103,11 +103,27 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             flex-shrink: 0;
+            position: relative;
         }
 
         .color-preview:hover {
             transform: scale(1.05);
             border-color: rgba(255,255,255,0.4);
+        }
+
+        .color-preview::after {
+            content: '🎨';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-size: 20px;
+        }
+
+        .color-preview:hover::after {
+            opacity: 0.8;
         }
 
         .color-input {
@@ -356,6 +372,279 @@
             transform: translateX(0);
         }
 
+        /* カラーピッカーモーダル */
+        .color-picker-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .color-picker-modal.show {
+            display: flex;
+        }
+
+        .color-picker {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow: hidden;
+            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .picker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .picker-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .picker-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .picker-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .picker-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .picker-tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.2s ease;
+            background: none;
+            border: none;
+            font-size: 14px;
+        }
+
+        .picker-tab.active {
+            background: #fff;
+            color: #007AFF;
+            font-weight: 600;
+        }
+
+        .picker-content {
+            padding: 24px;
+            background: #fff;
+        }
+
+        .picker-panel {
+            display: none;
+        }
+
+        .picker-panel.active {
+            display: block;
+        }
+
+        /* スペクトラムピッカー */
+        .spectrum-picker {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, 
+                #ff0000 0%, #ff8000 14%, #ffff00 28%, 
+                #80ff00 42%, #00ff00 56%, #00ff80 70%, 
+                #00ffff 84%, #0080ff 100%);
+        }
+
+        .spectrum-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            position: relative;
+            background: linear-gradient(to right, white 0%, transparent 100%),
+                        linear-gradient(to bottom, transparent 0%, black 100%);
+        }
+
+        .spectrum-cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+        }
+
+        /* グリッドピッカー */
+        .grid-picker {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .grid-color {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .grid-color:hover {
+            transform: scale(1.1);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .grid-color.selected {
+            border-color: #007AFF;
+            transform: scale(1.15);
+        }
+
+        /* スライダーピッカー */
+        .slider-picker .slider-group {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .color-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .color-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 2px solid #007AFF;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .red-slider {
+            background: linear-gradient(to right, #000, #ff0000);
+        }
+
+        .green-slider {
+            background: linear-gradient(to right, #000, #00ff00);
+        }
+
+        .blue-slider {
+            background: linear-gradient(to right, #000, #0000ff);
+        }
+
+        /* プレビューエリア */
+        .picker-preview {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .picker-preview-color {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            margin: 0 auto 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .picker-preview-info {
+            font-family: 'SF Mono', monospace;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* ピッカーボタン */
+        .picker-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .picker-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .picker-btn.cancel {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .picker-btn.apply {
+            background: #007AFF;
+            color: white;
+        }
+
+        .picker-btn:hover {
+            transform: translateY(-1px);
+        }
+
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -398,6 +687,11 @@
             
             .mode-option {
                 text-align: center;
+            }
+
+            .color-picker {
+                max-width: 350px;
+                margin: 10px;
             }
         }
 
@@ -460,6 +754,82 @@
         </div>
     </div>
 
+    <!-- カラーピッカーモーダル -->
+    <div class="color-picker-modal" id="colorPickerModal">
+        <div class="color-picker">
+            <div class="picker-header">
+                <div class="picker-title">カラー</div>
+                <button class="picker-close" onclick="closeColorPicker()">×</button>
+            </div>
+            
+            <div class="picker-tabs">
+                <button class="picker-tab" onclick="switchPickerTab('grid')">グリッド</button>
+                <button class="picker-tab active" onclick="switchPickerTab('spectrum')">スペクトラム</button>
+                <button class="picker-tab" onclick="switchPickerTab('slider')">スライダー</button>
+            </div>
+
+            <div class="picker-content">
+                <!-- グリッドピッカー -->
+                <div class="picker-panel" id="gridPicker">
+                    <div class="grid-picker" id="gridColors">
+                        <!-- Grid colors will be generated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- スペクトラムピッカー -->
+                <div class="picker-panel active" id="spectrumPicker">
+                    <div class="spectrum-picker">
+                        <div class="spectrum-canvas" id="spectrumCanvas">
+                            <div class="spectrum-cursor" id="spectrumCursor"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- スライダーピッカー -->
+                <div class="picker-panel" id="sliderPicker">
+                    <div class="slider-picker">
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>レッド</span>
+                                <span id="redValue">128</span>
+                            </div>
+                            <input type="range" class="color-slider red-slider" id="redSlider" 
+                                   min="0" max="255" value="128">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>グリーン</span>
+                                <span id="greenValue">128</span>
+                            </div>
+                            <input type="range" class="color-slider green-slider" id="greenSlider" 
+                                   min="0" max="255" value="128">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>ブルー</span>
+                                <span id="blueValue">128</span>
+                            </div>
+                            <input type="range" class="color-slider blue-slider" id="blueSlider" 
+                                   min="0" max="255" value="128">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- プレビューエリア -->
+                <div class="picker-preview">
+                    <div class="picker-preview-color" id="pickerPreviewColor"></div>
+                    <div class="picker-preview-info" id="pickerPreviewInfo">#808080</div>
+                </div>
+
+                <!-- ボタン -->
+                <div class="picker-buttons">
+                    <button class="picker-btn cancel" onclick="closeColorPicker()">キャンセル</button>
+                    <button class="picker-btn apply" onclick="applyColor()">適用</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="copy-notification" id="copyNotification">
         📋 クリップボードにコピーしました！
     </div>
@@ -468,6 +838,8 @@
         let colorSlots = [];
         let mixingMode = 'additive';
         let nextSlotId = 1;
+        let currentEditingSlotId = null;
+        let currentPickerColor = { r: 128, g: 128, b: 128 };
 
         // 色変換ユーティリティ関数
         function hexToRgb(hex) {
@@ -525,6 +897,35 @@
             return { r, g, b };
         }
 
+        function hsvToRgb(h, s, v) {
+            h = h / 360;
+            const c = v * s;
+            const x = c * (1 - Math.abs((h * 6) % 2 - 1));
+            const m = v - c;
+            
+            let r, g, b;
+            
+            if (h < 1/6) {
+                r = c; g = x; b = 0;
+            } else if (h < 2/6) {
+                r = x; g = c; b = 0;
+            } else if (h < 3/6) {
+                r = 0; g = c; b = x;
+            } else if (h < 4/6) {
+                r = 0; g = x; b = c;
+            } else if (h < 5/6) {
+                r = x; g = 0; b = c;
+            } else {
+                r = c; g = 0; b = x;
+            }
+            
+            return {
+                r: Math.round((r + m) * 255),
+                g: Math.round((g + m) * 255),
+                b: Math.round((b + m) * 255)
+            };
+        }
+
         // 混色ロジック（改善版）
         function additiveMix(colors, weights) {
             let totalWeight = weights.reduce((sum, w) => sum + w, 0);
@@ -534,7 +935,6 @@
             colors.forEach((color, i) => {
                 const rgb = hexToRgb(color);
                 const weight = weights[i] / totalWeight;
-                // 加法混色では光の強度を加算
                 r += Math.pow(rgb.r / 255, 2.2) * weight;
                 g += Math.pow(rgb.g / 255, 2.2) * weight;
                 b += Math.pow(rgb.b / 255, 2.2) * weight;
@@ -596,7 +996,7 @@
         }
 
         function removeColorSlot(slotId) {
-            if (colorSlots.length <= 2) return; // 最低2色は必要
+            if (colorSlots.length <= 2) return;
             
             colorSlots = colorSlots.filter(slot => slot.id !== slotId);
             updateSlotRatios();
@@ -648,15 +1048,216 @@
             });
         }
 
+        // カラーピッカー関数
         function openColorPicker(slotId) {
+            currentEditingSlotId = slotId;
             const slot = colorSlots.find(s => s.id === slotId);
             if (!slot) return;
 
-            const input = document.createElement('input');
-            input.type = 'color';
-            input.value = slot.color;
-            input.onchange = (e) => updateColor(slotId, e.target.value);
-            input.click();
+            currentPickerColor = hexToRgb(slot.color);
+            
+            document.getElementById('colorPickerModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            initializeGridPicker();
+            updatePickerDisplay();
+            setupSliderEvents();
+            initializeSpectrumPicker();
+        }
+
+        function closeColorPicker() {
+            document.getElementById('colorPickerModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+            currentEditingSlotId = null;
+        }
+
+        function switchPickerTab(tabName) {
+            // タブの切り替え
+            document.querySelectorAll('.picker-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.picker-panel').forEach(panel => panel.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Picker').classList.add('active');
+            
+            if (tabName === 'spectrum') {
+                setTimeout(() => initializeSpectrumPicker(), 100);
+            } else if (tabName === 'grid') {
+                initializeGridPicker();
+            }
+        }
+
+        function initializeGridPicker() {
+            const gridContainer = document.getElementById('gridColors');
+            gridContainer.innerHTML = '';
+            
+            // 基本色のパレット（8x8グリッド）
+            const basicColors = [
+                // 1行目 - 基本色
+                '#FF0000', '#FF4000', '#FF8000', '#FFBF00', '#FFFF00', '#BFFF00', '#80FF00', '#40FF00',
+                // 2行目 - 緑系
+                '#00FF00', '#00FF40', '#00FF80', '#00FFBF', '#00FFFF', '#00BFFF', '#0080FF', '#0040FF',
+                // 3行目 - 青系
+                '#0000FF', '#4000FF', '#8000FF', '#BF00FF', '#FF00FF', '#FF00BF', '#FF0080', '#FF0040',
+                // 4行目 - 暗い色
+                '#800000', '#804000', '#808000', '#408000', '#008000', '#008040', '#008080', '#004080',
+                // 5行目 - 青・紫系
+                '#000080', '#400080', '#800080', '#800040', '#400000', '#402000', '#404000', '#204000',
+                // 6行目 - グレースケール
+                '#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#FFFFFF', '#EEEEEE', '#DDDDDD',
+                // 7行目 - パステルカラー
+                '#FFE0E0', '#E0FFE0', '#E0E0FF', '#FFFFE0', '#FFE0FF', '#E0FFFF', '#F0F0F0', '#FFF0F0',
+                // 8行目 - 鮮やかな色
+                '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'
+            ];
+            
+            basicColors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'grid-color';
+                colorDiv.style.backgroundColor = color;
+                colorDiv.onclick = () => {
+                    currentPickerColor = hexToRgb(color);
+                    updatePickerDisplay();
+                    // 選択状態を更新
+                    document.querySelectorAll('.grid-color').forEach(c => c.classList.remove('selected'));
+                    colorDiv.classList.add('selected');
+                };
+                gridContainer.appendChild(colorDiv);
+            });
+        }
+
+        function initializeSpectrumPicker() {
+            const spectrumCanvas = document.getElementById('spectrumCanvas');
+            const cursor = document.getElementById('spectrumCursor');
+            
+            if (!spectrumCanvas) return;
+            
+            let isDragging = false;
+            
+            function updateSpectrumColor(x, y) {
+                const rect = spectrumCanvas.getBoundingClientRect();
+                const relX = Math.max(0, Math.min(1, x / rect.width));
+                const relY = Math.max(0, Math.min(1, y / rect.height));
+                
+                // HSVからRGBに変換
+                const hue = relX * 360;
+                const saturation = 1 - relY;
+                const value = 1;
+                
+                const rgb = hsvToRgb(hue, saturation, value);
+                currentPickerColor = rgb;
+                updatePickerDisplay();
+                
+                // カーソル位置を更新
+                cursor.style.left = (relX * 100) + '%';
+                cursor.style.top = (relY * 100) + '%';
+            }
+            
+            spectrumCanvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                const rect = spectrumCanvas.getBoundingClientRect();
+                updateSpectrumColor(e.clientX - rect.left, e.clientY - rect.top);
+            });
+            
+            spectrumCanvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                isDragging = true;
+                const touch = e.touches[0];
+                const rect = spectrumCanvas.getBoundingClientRect();
+                updateSpectrumColor(touch.clientX - rect.left, touch.clientY - rect.top);
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const rect = spectrumCanvas.getBoundingClientRect();
+                updateSpectrumColor(e.clientX - rect.left, e.clientY - rect.top);
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = spectrumCanvas.getBoundingClientRect();
+                updateSpectrumColor(touch.clientX - rect.left, touch.clientY - rect.top);
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        function setupSliderEvents() {
+            const redSlider = document.getElementById('redSlider');
+            const greenSlider = document.getElementById('greenSlider');
+            const blueSlider = document.getElementById('blueSlider');
+            
+            if (!redSlider || !greenSlider || !blueSlider) return;
+            
+            redSlider.oninput = () => {
+                currentPickerColor.r = parseInt(redSlider.value);
+                updatePickerDisplay();
+            };
+            
+            greenSlider.oninput = () => {
+                currentPickerColor.g = parseInt(greenSlider.value);
+                updatePickerDisplay();
+            };
+            
+            blueSlider.oninput = () => {
+                currentPickerColor.b = parseInt(blueSlider.value);
+                updatePickerDisplay();
+            };
+        }
+
+        function updatePickerDisplay() {
+            const hex = rgbToHex(currentPickerColor.r, currentPickerColor.g, currentPickerColor.b);
+            
+            // プレビューを更新
+            const previewElement = document.getElementById('pickerPreviewColor');
+            const infoElement = document.getElementById('pickerPreviewInfo');
+            
+            if (previewElement) {
+                previewElement.style.backgroundColor = hex;
+            }
+            if (infoElement) {
+                infoElement.textContent = hex.toUpperCase();
+            }
+            
+            // スライダーを更新
+            const redSlider = document.getElementById('redSlider');
+            const greenSlider = document.getElementById('greenSlider');
+            const blueSlider = document.getElementById('blueSlider');
+            const redValue = document.getElementById('redValue');
+            const greenValue = document.getElementById('greenValue');
+            const blueValue = document.getElementById('blueValue');
+            
+            if (redSlider) {
+                redSlider.value = currentPickerColor.r;
+                redValue.textContent = Math.round(currentPickerColor.r);
+            }
+            if (greenSlider) {
+                greenSlider.value = currentPickerColor.g;
+                greenValue.textContent = Math.round(currentPickerColor.g);
+            }
+            if (blueSlider) {
+                blueSlider.value = currentPickerColor.b;
+                blueValue.textContent = Math.round(currentPickerColor.b);
+            }
+        }
+
+        function applyColor() {
+            if (currentEditingSlotId) {
+                const slot = colorSlots.find(s => s.id === currentEditingSlotId);
+                if (slot) {
+                    slot.color = rgbToHex(currentPickerColor.r, currentPickerColor.g, currentPickerColor.b);
+                    renderColorSlots();
+                    updateMixedColor();
+                }
+            }
+            closeColorPicker();
         }
 
         function updateColor(slotId, color) {
@@ -762,25 +1363,19 @@
             updateMixedColor();
         }
 
-        // 初期化
-        function init() {
-            // 初期色を3つ追加
-            createColorSlot();
-            createColorSlot();
-            createColorSlot();
-            
-            updateSlotRatios();
-            renderColorSlots();
-            updateMixedColor();
-            updateAddButton();
-            setupModeToggle();
-        }
+        // モーダル外クリックで閉じる
+        document.getElementById('colorPickerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeColorPicker();
+            }
+        });
 
-        // ページ読み込み時に初期化
-        document.addEventListener('DOMContentLoaded', init);
-
-        // キーボードショートカット
+        // ESCキーで閉じる
         document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeColorPicker();
+            }
+            
             if (e.ctrlKey || e.metaKey) {
                 switch(e.key) {
                     case '+':
@@ -797,6 +1392,23 @@
                 }
             }
         });
+
+        // 初期化
+        function init() {
+            // 初期色を3つ追加
+            createColorSlot();
+            createColorSlot();
+            createColorSlot();
+            
+            updateSlotRatios();
+            renderColorSlots();
+            updateMixedColor();
+            updateAddButton();
+            setupModeToggle();
+        }
+
+        // ページ読み込み時に初期化
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
