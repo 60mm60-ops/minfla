@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ミンフラ Mingle Flash - 色混合シミュレーター</title>
+    <title>🎨 ミングルフラッシュ（Mingle Flash）</title>
     <style>
         * {
             margin: 0;
@@ -12,65 +12,41 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e  50%, #0f3460 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
             padding: 20px;
         }
 
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
         .header {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 30px;
             text-align: center;
-            margin-bottom: 40px;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-            border-radius: 24px;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .header h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientAnimation 3s ease-in-out infinite;
-            margin-bottom: 12px;
-        }
-
-        @keyframes gradientAnimation {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            color: #b8c6db;
+            opacity: 0.9;
+            font-size: 1.1em;
         }
 
         .main-content {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 30px;
-            align-items: start;
-        }
-
-        .left-panel {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
             padding: 30px;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .color-slots {
@@ -80,102 +56,74 @@
         .slot {
             display: flex;
             align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
         }
 
         .slot:hover {
-            background: rgba(255,255,255,0.12);
-            border-color: rgba(78, 205, 196, 0.5);
+            border-color: #4ecdc4;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .color-preview {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            border: 3px solid rgba(255,255,255,0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            flex-shrink: 0;
-            position: relative;
+            margin-right: 15px;
+            transition: transform 0.2s ease;
         }
 
         .color-preview:hover {
-            transform: scale(1.05);
-            border-color: rgba(255,255,255,0.4);
-        }
-
-        .color-preview::after {
-            content: '🎨';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            font-size: 20px;
-        }
-
-        .color-preview:hover::after {
-            opacity: 0.8;
+            transform: scale(1.1);
         }
 
         .color-input {
-            min-width: 100px;
+            margin-right: 15px;
         }
 
         .color-input input {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
-            color: #ffffff;
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
             font-size: 14px;
-            transition: all 0.3s ease;
+            width: 100px;
+            transition: border-color 0.3s ease;
         }
 
         .color-input input:focus {
             outline: none;
             border-color: #4ecdc4;
-            background: rgba(255,255,255,0.15);
-            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
         }
 
         .ratio-control {
             flex: 1;
-            min-width: 0;
+            margin-right: 15px;
         }
 
         .ratio-control label {
             display: block;
             font-size: 12px;
-            color: #b8c6db;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .ratio-slider-container {
-            position: relative;
+            color: #666;
             margin-bottom: 5px;
         }
 
         .ratio-slider {
             width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: rgba(255,255,255,0.1);
+            height: 8px;
+            border-radius: 4px;
+            background: #ddd;
             outline: none;
             appearance: none;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
 
         .ratio-slider::-webkit-slider-thumb {
@@ -183,51 +131,33 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            background: #4ecdc4;
             cursor: pointer;
-            border: 2px solid #ffffff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            transition: all 0.2s ease;
-        }
-
-        .ratio-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
-        }
-
-        .ratio-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
-            cursor: pointer;
-            border: 2px solid #ffffff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
         .ratio-value {
-            font-size: 14px;
-            font-weight: 600;
-            color: #4ecdc4;
+            display: inline-block;
+            min-width: 40px;
             text-align: center;
-            min-width: 45px;
+            font-weight: bold;
+            color: #333;
         }
 
         .delete-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            background: #ff6b6b;
             color: white;
             border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 12px;
-            font-weight: 600;
             transition: all 0.3s ease;
-            flex-shrink: 0;
         }
 
         .delete-btn:hover {
-            background: linear-gradient(135deg, #ff5252, #e53935);
+            background: #ff5252;
             transform: scale(1.05);
         }
 
@@ -236,289 +166,256 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            padding: 15px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
             color: white;
             border: none;
-            border-radius: 14px;
+            border-radius: 10px;
             font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             margin-bottom: 30px;
         }
 
-        .add-slot-btn:hover:not(:disabled) {
+        .add-slot-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .add-slot-btn:disabled {
-            background: rgba(255,255,255,0.1);
+            background: #ccc;
             cursor: not-allowed;
             transform: none;
         }
 
         .mixing-mode {
             text-align: center;
+            margin-bottom: 30px;
         }
 
         .mixing-mode h3 {
-            margin-bottom: 20px;
-            color: #ffffff;
-            font-size: 1.2rem;
-            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
         }
 
         .mode-toggle {
             display: inline-flex;
-            background: rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 6px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #f1f3f4;
+            border-radius: 25px;
+            padding: 5px;
+            position: relative;
         }
 
         .mode-option {
-            padding: 12px 20px;
-            border-radius: 12px;
+            padding: 10px 20px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             font-weight: 500;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-
-        .mode-option:hover {
-            background: rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 2;
         }
 
         .mode-option.active {
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             color: white;
-            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
-        }
-
-        .right-panel {
-            position: sticky;
-            top: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         }
 
         .result-preview {
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 30px;
             text-align: center;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-bottom: 20px;
         }
 
         .result-color {
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            margin: 0 auto 25px;
-            border: 6px solid rgba(255,255,255,0.2);
+            margin: 0 auto 20px;
+            border: 8px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
         }
 
         .result-color:hover {
-            transform: scale(1.02);
-            border-color: rgba(255,255,255,0.4);
+            transform: scale(1.05);
         }
 
         .result-info {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .color-value {
-            background: rgba(255,255,255,0.08);
-            padding: 14px 18px;
-            border-radius: 12px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-            font-weight: 600;
-            font-size: 14px;
-            border: 1px solid rgba(255,255,255,0.1);
+            font-family: monospace;
+            font-weight: bold;
         }
 
         .color-value:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateY(-1px);
-            border-color: rgba(78, 205, 196, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .copy-notification {
             position: fixed;
-            top: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            top: 20px;
+            right: 20px;
+            background: #4ecdc4;
             color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transform: translateX(120%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(300px);
+            transition: transform 0.3s ease;
             z-index: 1000;
-            font-weight: 600;
+            opacity: 0;
+            visibility: hidden;
         }
 
         .copy-notification.show {
             transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
         }
 
-        /* カラーピッカーモーダル */
+        /* カスタムカラーピッカーモーダル */
         .color-picker-modal {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .color-picker-modal.show {
-            display: flex;
-        }
-
-        .color-picker {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
             width: 100%;
-            max-width: 400px;
-            max-height: 90vh;
-            overflow: hidden;
-            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        @keyframes modalSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .picker-header {
-            display: flex;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-            padding: 20px 24px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
         }
 
-        .picker-title {
-            font-size: 18px;
-            font-weight: 600;
+        .color-picker-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+
+        .color-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .color-picker-header h3 {
+            margin: 0;
             color: #333;
         }
 
-        .picker-close {
+        .close-btn {
             background: none;
             border: none;
             font-size: 24px;
             cursor: pointer;
             color: #666;
-            width: 32px;
-            height: 32px;
+            padding: 5px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
-        .picker-close:hover {
-            background: rgba(0, 0, 0, 0.1);
+        .close-btn:hover {
+            background: #f0f0f0;
         }
 
         .picker-tabs {
             display: flex;
-            background: rgba(255, 255, 255, 0.8);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
         }
 
         .picker-tab {
             flex: 1;
-            padding: 12px 16px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.2s ease;
-            background: none;
-            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
             font-size: 14px;
         }
 
         .picker-tab.active {
-            background: #fff;
-            color: #007AFF;
-            font-weight: 600;
+            background: #4ecdc4;
+            color: white;
         }
 
         .picker-content {
-            padding: 24px;
-            background: #fff;
-        }
-
-        .picker-panel {
             display: none;
         }
 
-        .picker-panel.active {
+        .picker-content.active {
             display: block;
         }
 
         /* スペクトラムピッカー */
         .spectrum-picker {
-            position: relative;
             width: 100%;
-            height: 280px;
-            border-radius: 12px;
-            overflow: hidden;
+            height: 200px;
+            background: linear-gradient(to right, 
+                #ff0000 0%, 
+                #ffff00 17%, 
+                #00ff00 33%, 
+                #00ffff 50%, 
+                #0000ff 67%, 
+                #ff00ff 83%, 
+                #ff0000 100%);
+            border-radius: 10px;
+            position: relative;
+            cursor: crosshair;
             margin-bottom: 20px;
-            background: linear-gradient(to bottom, 
-                #ff0000 0%, #ff8000 14%, #ffff00 28%, 
-                #80ff00 42%, #00ff00 56%, #00ff80 70%, 
-                #00ffff 84%, #0080ff 100%);
         }
 
-        .spectrum-canvas {
-            width: 100%;
-            height: 100%;
-            cursor: crosshair;
-            position: relative;
-            background: linear-gradient(to right, white 0%, transparent 100%),
-                        linear-gradient(to bottom, transparent 0%, black 100%);
+        .spectrum-picker::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, 
+                rgba(255,255,255,1) 0%, 
+                rgba(255,255,255,0) 50%, 
+                rgba(0,0,0,0) 50%, 
+                rgba(0,0,0,1) 100%);
+            border-radius: 10px;
+            pointer-events: none;
         }
 
         .spectrum-cursor {
             position: absolute;
             width: 20px;
             height: 20px;
-            border: 2px solid white;
+            border: 3px solid white;
             border-radius: 50%;
-            pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+            pointer-events: none;
+            z-index: 10;
         }
 
         /* グリッドピッカー */
@@ -530,224 +427,325 @@
         }
 
         .grid-color {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
             cursor: pointer;
+            border: 3px solid transparent;
             transition: all 0.2s ease;
-            border: 2px solid transparent;
         }
 
         .grid-color:hover {
+            border-color: #333;
             transform: scale(1.1);
-            border-color: rgba(0, 0, 0, 0.2);
         }
 
         .grid-color.selected {
-            border-color: #007AFF;
-            transform: scale(1.15);
+            border-color: #4ecdc4;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
         }
 
         /* スライダーピッカー */
-        .slider-picker .slider-group {
+        .slider-picker {
             margin-bottom: 20px;
         }
 
-        .slider-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            font-size: 14px;
+        .slider-group {
+            margin-bottom: 15px;
+        }
+
+        .slider-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
             color: #333;
-            font-weight: 500;
         }
 
         .color-slider {
             width: 100%;
-            height: 8px;
-            border-radius: 4px;
+            height: 20px;
+            border-radius: 10px;
             outline: none;
             appearance: none;
             cursor: pointer;
+            margin-bottom: 5px;
         }
 
         .color-slider::-webkit-slider-thumb {
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background: white;
             cursor: pointer;
-            border: 2px solid #007AFF;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 3px solid #333;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
-        .red-slider {
-            background: linear-gradient(to right, #000, #ff0000);
-        }
-
-        .green-slider {
-            background: linear-gradient(to right, #000, #00ff00);
-        }
-
-        .blue-slider {
-            background: linear-gradient(to right, #000, #0000ff);
-        }
-
-        /* プレビューエリア */
-        .picker-preview {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .picker-preview-color {
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
-            margin: 0 auto 12px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .picker-preview-info {
-            font-family: 'SF Mono', monospace;
+        .slider-value {
+            display: flex;
+            justify-content: space-between;
+            font-family: monospace;
             font-size: 14px;
             color: #666;
         }
 
-        /* ピッカーボタン */
+        /* プレビューエリア */
+        .color-preview-large {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 3px solid #ddd;
+        }
+
+        .color-values-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .value-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .value-item strong {
+            color: #333;
+        }
+
         .picker-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .picker-btn {
             flex: 1;
             padding: 12px;
             border: none;
-            border-radius: 12px;
-            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
 
-        .picker-btn.cancel {
-            background: rgba(0, 0, 0, 0.1);
-            color: #333;
-        }
-
-        .picker-btn.apply {
-            background: #007AFF;
+        .picker-btn.primary {
+            background: #4ecdc4;
             color: white;
         }
 
-        .picker-btn:hover {
-            transform: translateY(-1px);
+        .picker-btn.primary:hover {
+            background: #44a08d;
         }
 
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .right-panel {
-                position: static;
-            }
+        .picker-btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .picker-btn.secondary:hover {
+            background: #e9ecef;
+        }
+
+        /* 逆算分析エリア */
+        .reverse-analysis {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .reverse-analysis h4 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .analysis-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .analysis-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .analysis-tab.active {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        .analysis-content {
+            min-height: 150px;
+        }
+
+        .recipe-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4ecdc4;
+        }
+
+        .recipe-colors {
+            display: flex;
+            gap: 10px;
+            margin-right: 15px;
+        }
+
+        .recipe-color-chip {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .recipe-ratio {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        .recipe-description {
+            flex: 1;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .recipe-accuracy {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px 20px;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 15px;
+                margin: 10px;
+                border-radius: 15px;
             }
-            
-            .header h1 {
-                font-size: 2.2rem;
-            }
-            
+
             .slot {
                 flex-direction: column;
-                gap: 15px;
                 align-items: stretch;
+                gap: 10px;
             }
-            
+
             .color-preview {
                 align-self: center;
+                margin: 0 0 10px 0;
             }
-            
+
             .result-color {
-                width: 160px;
-                height: 160px;
+                width: 150px;
+                height: 150px;
             }
-            
-            .mode-toggle {
+
+            .result-info {
                 flex-direction: column;
-                width: 100%;
-            }
-            
-            .mode-option {
-                text-align: center;
             }
 
-            .color-picker {
-                max-width: 350px;
-                margin: 10px;
+            .color-picker-content {
+                padding: 20px;
             }
-        }
 
-        .fade-in {
-            animation: fadeIn 0.6s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+            .grid-picker {
+                grid-template-columns: repeat(6, 1fr);
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+
+            .grid-color {
+                width: 35px;
+                height: 35px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header fade-in">
-            <h1>ミンフラ Mingle Flash</h1>
-            <p>直感的な色混合シミュレーター - 加法混色と減法混色をリアルタイムで体験</p>
+        <div class="header">
+            <h1>🎨 ミングルフラッシュ</h1>
+            <p>色を混ぜてみよう！加法混色と減法混色をリアルタイムでシミュレート</p>
         </div>
 
         <div class="main-content">
-            <div class="left-panel fade-in">
-                <div class="color-slots" id="colorSlots">
-                    <!-- Color slots will be generated by JavaScript -->
-                </div>
+            <div class="color-slots" id="colorSlots">
+                <!-- Color slots will be generated by JavaScript -->
+            </div>
 
-                <button class="add-slot-btn" id="addSlotBtn" onclick="addColorSlot()">
-                    ＋ 色を追加
-                </button>
+            <button class="add-slot-btn" id="addSlotBtn" onclick="addColorSlot()">
+                ＋ 色を追加
+            </button>
 
-                <div class="mixing-mode">
-                    <h3>混色モード</h3>
-                    <div class="mode-toggle">
-                        <div class="mode-option active" data-mode="additive">
-                            🔆 加法混色（光の混色）
-                        </div>
-                        <div class="mode-option" data-mode="subtractive">
-                            🎨 減法混色（絵の具の混色）
-                        </div>
+            <div class="mixing-mode">
+                <h3>混色モード</h3>
+                <div class="mode-toggle">
+                    <div class="mode-option active" onclick="setMixingMode('additive')">
+                        🔆 加法混色（光の混色）
+                    </div>
+                    <div class="mode-option" onclick="setMixingMode('subtractive')">
+                        🎨 減法混色（絵の具の混色）
                     </div>
                 </div>
             </div>
 
-            <div class="right-panel fade-in">
-                <div class="result-preview">
-                    <div class="result-color" id="resultColor" onclick="copyColor('hex')"></div>
-                    <div class="result-info">
-                        <div class="color-value" id="hexValue" onclick="copyColor('hex')">#808080</div>
-                        <div class="color-value" id="rgbValue" onclick="copyColor('rgb')">RGB(128, 128, 128)</div>
-                        <div class="color-value" id="hslValue" onclick="copyColor('hsl')">HSL(0, 0%, 50%)</div>
+            <div class="result-preview">
+                <div class="result-color" id="resultColor" onclick="copyColor('hex')"></div>
+                <div class="result-info">
+                    <div class="color-value" id="hexValue" onclick="copyColor('hex')">#808080</div>
+                    <div class="color-value" id="rgbValue" onclick="copyColor('rgb')">RGB(128, 128, 128)</div>
+                    <div class="color-value" id="hslValue" onclick="copyColor('hsl')">HSL(0, 0%, 50%)</div>
+                </div>
+                
+                <!-- 逆算機能 -->
+                <div class="reverse-analysis" id="reverseAnalysis">
+                    <h4>🔍 この色の作り方</h4>
+                    <div class="analysis-tabs">
+                        <div class="analysis-tab active" onclick="switchAnalysisMode('additive', event)">
+                            🔆 加法混色での作り方
+                        </div>
+                        <div class="analysis-tab" onclick="switchAnalysisMode('subtractive', event)">
+                            🎨 減法混色での作り方
+                        </div>
+                    </div>
+                    <div class="analysis-content" id="analysisContent">
+                        <!-- 分析結果がここに表示される -->
                     </div>
                 </div>
             </div>
@@ -756,82 +754,89 @@
 
     <!-- カラーピッカーモーダル -->
     <div class="color-picker-modal" id="colorPickerModal">
-        <div class="color-picker">
-            <div class="picker-header">
-                <div class="picker-title">カラー</div>
-                <button class="picker-close" onclick="closeColorPicker()">×</button>
+        <div class="color-picker-content">
+            <div class="color-picker-header">
+                <h3>色を選択</h3>
+                <button class="close-btn" onclick="closeColorPicker()">&times;</button>
             </div>
             
             <div class="picker-tabs">
-                <button class="picker-tab" onclick="switchPickerTab('grid')">グリッド</button>
-                <button class="picker-tab active" onclick="switchPickerTab('spectrum')">スペクトラム</button>
-                <button class="picker-tab" onclick="switchPickerTab('slider')">スライダー</button>
+                <div class="picker-tab active" onclick="switchPickerTab('spectrum')">スペクトラム</div>
+                <div class="picker-tab" onclick="switchPickerTab('grid')">グリッド</div>
+                <div class="picker-tab" onclick="switchPickerTab('slider')">スライダー</div>
             </div>
 
-            <div class="picker-content">
-                <!-- グリッドピッカー -->
-                <div class="picker-panel" id="gridPicker">
-                    <div class="grid-picker" id="gridColors">
-                        <!-- Grid colors will be generated by JavaScript -->
-                    </div>
+            <!-- スペクトラムピッカー -->
+            <div class="picker-content active" id="spectrumPicker">
+                <div class="spectrum-picker" id="spectrumCanvas">
+                    <div class="spectrum-cursor" id="spectrumCursor"></div>
                 </div>
+            </div>
 
-                <!-- スペクトラムピッカー -->
-                <div class="picker-panel active" id="spectrumPicker">
-                    <div class="spectrum-picker">
-                        <div class="spectrum-canvas" id="spectrumCanvas">
-                            <div class="spectrum-cursor" id="spectrumCursor"></div>
+            <!-- グリッドピッカー -->
+            <div class="picker-content" id="gridPicker">
+                <div class="grid-picker" id="gridColors">
+                    <!-- Grid colors will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- スライダーピッカー -->
+            <div class="picker-content" id="sliderPicker">
+                <div class="slider-picker">
+                    <div class="slider-group">
+                        <label>レッド (R)</label>
+                        <input type="range" class="color-slider" id="redSlider" min="0" max="255" value="128" 
+                               style="background: linear-gradient(to right, #000, #f00);">
+                        <div class="slider-value">
+                            <span>0</span>
+                            <span id="redValue">128</span>
+                            <span>255</span>
                         </div>
                     </div>
-                </div>
-
-                <!-- スライダーピッカー -->
-                <div class="picker-panel" id="sliderPicker">
-                    <div class="slider-picker">
-                        <div class="slider-group">
-                            <div class="slider-label">
-                                <span>レッド</span>
-                                <span id="redValue">128</span>
-                            </div>
-                            <input type="range" class="color-slider red-slider" id="redSlider" 
-                                   min="0" max="255" value="128">
+                    <div class="slider-group">
+                        <label>グリーン (G)</label>
+                        <input type="range" class="color-slider" id="greenSlider" min="0" max="255" value="128"
+                               style="background: linear-gradient(to right, #000, #0f0);">
+                        <div class="slider-value">
+                            <span>0</span>
+                            <span id="greenValue">128</span>
+                            <span>255</span>
                         </div>
-                        <div class="slider-group">
-                            <div class="slider-label">
-                                <span>グリーン</span>
-                                <span id="greenValue">128</span>
-                            </div>
-                            <input type="range" class="color-slider green-slider" id="greenSlider" 
-                                   min="0" max="255" value="128">
-                        </div>
-                        <div class="slider-group">
-                            <div class="slider-label">
-                                <span>ブルー</span>
-                                <span id="blueValue">128</span>
-                            </div>
-                            <input type="range" class="color-slider blue-slider" id="blueSlider" 
-                                   min="0" max="255" value="128">
+                    </div>
+                    <div class="slider-group">
+                        <label>ブルー (B)</label>
+                        <input type="range" class="color-slider" id="blueSlider" min="0" max="255" value="128"
+                               style="background: linear-gradient(to right, #000, #00f);">
+                        <div class="slider-value">
+                            <span>0</span>
+                            <span id="blueValue">128</span>
+                            <span>255</span>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- プレビューエリア -->
-                <div class="picker-preview">
-                    <div class="picker-preview-color" id="pickerPreviewColor"></div>
-                    <div class="picker-preview-info" id="pickerPreviewInfo">#808080</div>
+            <!-- プレビューエリア -->
+            <div class="color-preview-large" id="pickerPreview"></div>
+            
+            <div class="color-values-display">
+                <div class="value-item">
+                    <strong>HEX:</strong> <span id="pickerHex">#808080</span>
                 </div>
+                <div class="value-item">
+                    <strong>RGB:</strong> <span id="pickerRgb">128, 128, 128</span>
+                </div>
+            </div>
 
-                <!-- ボタン -->
-                <div class="picker-buttons">
-                    <button class="picker-btn cancel" onclick="closeColorPicker()">キャンセル</button>
-                    <button class="picker-btn apply" onclick="applyColor()">適用</button>
-                </div>
+            <div class="picker-buttons">
+                <button class="picker-btn secondary" onclick="closeColorPicker()">キャンセル</button>
+                <button class="picker-btn primary" onclick="applyColor()">適用</button>
             </div>
         </div>
     </div>
 
     <div class="copy-notification" id="copyNotification">
-        📋 クリップボードにコピーしました！
+        クリップボードにコピーしました！
     </div>
 
     <script>
@@ -840,6 +845,27 @@
         let nextSlotId = 1;
         let currentEditingSlotId = null;
         let currentPickerColor = { r: 128, g: 128, b: 128 };
+        let currentAnalysisMode = 'additive';
+
+        // 基本色パレット（逆算用）
+        const baseColors = {
+            '赤': '#FF0000',
+            '緑': '#00FF00', 
+            '青': '#0000FF',
+            '黄': '#FFFF00',
+            'シアン': '#00FFFF',
+            'マゼンタ': '#FF00FF',
+            '白': '#FFFFFF',
+            '黒': '#000000',
+            'オレンジ': '#FF8000',
+            'ライム': '#80FF00',
+            '紫': '#8000FF',
+            'ピンク': '#FF0080',
+            '茶色': '#804020',
+            'ネイビー': '#000080',
+            'ダークグリーン': '#008000',
+            'グレー': '#808080'
+        };
 
         // 色変換ユーティリティ関数
         function hexToRgb(hex) {
@@ -897,6 +923,292 @@
             return { r, g, b };
         }
 
+        // 混色ロジック
+        function additiveMix(colors, weights) {
+            let totalWeight = weights.reduce((sum, w) => sum + w, 0);
+            if (totalWeight === 0) return { r: 128, g: 128, b: 128 };
+
+            let r = 0, g = 0, b = 0;
+            colors.forEach((color, i) => {
+                const rgb = hexToRgb(color);
+                const weight = weights[i] / totalWeight;
+                r += rgb.r * weight;
+                g += rgb.g * weight;
+                b += rgb.b * weight;
+            });
+
+            return { r: Math.min(255, r), g: Math.min(255, g), b: Math.min(255, b) };
+        }
+
+        function subtractiveMix(colors, weights) {
+            let totalWeight = weights.reduce((sum, w) => sum + w, 0);
+            if (totalWeight === 0) return { r: 128, g: 128, b: 128 };
+
+            let c = 0, m = 0, y = 0;
+            colors.forEach((color, i) => {
+                const rgb = hexToRgb(color);
+                const cmy = rgbToCmy(rgb.r, rgb.g, rgb.b);
+                const weight = weights[i] / totalWeight;
+                c += cmy.c * weight;
+                m += cmy.m * weight;
+                y += cmy.y * weight;
+            });
+
+            return cmyToRgb(c, m, y);
+        }
+
+        // UI 関数
+        function createColorSlot() {
+            const slotId = nextSlotId++;
+            const slot = {
+                id: slotId,
+                color: generateRandomColor(),
+                ratio: 100
+            };
+            colorSlots.push(slot);
+            return slot;
+        }
+
+        function generateRandomColor() {
+            return "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        }
+
+        function addColorSlot() {
+            if (colorSlots.length >= 4) return;
+            
+            createColorSlot();
+            updateSlotRatios();
+            renderColorSlots();
+            updateMixedColor();
+            updateAddButton();
+        }
+
+        function removeColorSlot(slotId) {
+            colorSlots = colorSlots.filter(slot => slot.id !== slotId);
+            updateSlotRatios();
+            renderColorSlots();
+            updateMixedColor();
+            updateAddButton();
+        }
+
+        function updateSlotRatios() {
+            if (colorSlots.length === 0) return;
+            
+            const equalRatio = 100 / colorSlots.length;
+            colorSlots.forEach(slot => {
+                slot.ratio = equalRatio;
+            });
+        }
+
+        function updateAddButton() {
+            const addBtn = document.getElementById('addSlotBtn');
+            addBtn.disabled = colorSlots.length >= 4;
+            addBtn.textContent = colorSlots.length >= 4 ? '最大4色まで' : '＋ 色を追加';
+        }
+
+        function renderColorSlots() {
+            const container = document.getElementById('colorSlots');
+            container.innerHTML = '';
+
+            colorSlots.forEach(slot => {
+                const slotElement = document.createElement('div');
+                slotElement.className = 'slot';
+                slotElement.innerHTML = `
+                    <div class="color-preview" style="background-color: ${slot.color}" onclick="openColorPicker(${slot.id})"></div>
+                    <div class="color-input">
+                        <input type="text" value="${slot.color}" onchange="updateColor(${slot.id}, this.value)" maxlength="7">
+                    </div>
+                    <div class="ratio-control">
+                        <label>比率</label>
+                        <input type="range" class="ratio-slider" min="1" max="100" value="${slot.ratio}" 
+                               onchange="updateRatio(${slot.id}, this.value)">
+                        <span class="ratio-value">${Math.round(slot.ratio)}%</span>
+                    </div>
+                    <button class="delete-btn" onclick="removeColorSlot(${slot.id})">削除</button>
+                `;
+                container.appendChild(slotElement);
+            });
+        }
+
+        function openColorPicker(slotId) {
+            currentEditingSlotId = slotId;
+            const slot = colorSlots.find(s => s.id === slotId);
+            if (!slot) return;
+
+            currentPickerColor = hexToRgb(slot.color);
+            updatePickerDisplay();
+            document.getElementById('colorPickerModal').style.display = 'flex';
+            initializeGridPicker();
+            setupSliderEvents();
+        }
+
+        function closeColorPicker() {
+            document.getElementById('colorPickerModal').style.display = 'none';
+            currentEditingSlotId = null;
+        }
+
+        function updateColor(slotId, color) {
+            const slot = colorSlots.find(s => s.id === slotId);
+            if (!slot) return;
+
+            // HEX形式の検証
+            if (!/^#[0-9A-F]{6}$/i.test(color)) {
+                if (!/^#/.test(color)) color = '#' + color;
+                if (!/^#[0-9A-F]{6}$/i.test(color)) return;
+            }
+
+            slot.color = color.toUpperCase();
+            renderColorSlots();
+            updateMixedColor();
+        }
+
+        function updateRatio(slotId, ratio) {
+            const slot = colorSlots.find(s => s.id === slotId);
+            if (!slot) return;
+
+            slot.ratio = parseFloat(ratio);
+            renderColorSlots();
+            updateMixedColor();
+        }
+
+        function setMixingMode(mode) {
+            mixingMode = mode;
+            document.querySelectorAll('.mode-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            updateMixedColor();
+        }
+
+        function updateMixedColor() {
+            if (colorSlots.length === 0) {
+                const defaultColor = { r: 128, g: 128, b: 128 };
+                displayResult(defaultColor);
+                return;
+            }
+
+            const colors = colorSlots.map(slot => slot.color);
+            const weights = colorSlots.map(slot => slot.ratio);
+
+            let result;
+            if (mixingMode === 'additive') {
+                result = additiveMix(colors, weights);
+            } else {
+                result = subtractiveMix(colors, weights);
+            }
+
+            displayResult(result);
+        }
+
+        function displayResult(rgb) {
+            const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+            document.getElementById('resultColor').style.backgroundColor = hex;
+            document.getElementById('hexValue').textContent = hex;
+            document.getElementById('rgbValue').textContent = `RGB(${Math.round(rgb.r)}, ${Math.round(rgb.g)}, ${Math.round(rgb.b)})`;
+            document.getElementById('hslValue').textContent = `HSL(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+            
+            // 逆算分析を実行
+            performReverseAnalysis(hex);
+        }
+
+        function copyColor(format) {
+            let textToCopy;
+            if (format === 'hex') {
+                textToCopy = document.getElementById('hexValue').textContent;
+            } else if (format === 'rgb') {
+                textToCopy = document.getElementById('rgbValue').textContent;
+            } else if (format === 'hsl') {
+                textToCopy = document.getElementById('hslValue').textContent;
+            }
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showCopyNotification();
+            });
+        }
+
+        function showCopyNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        // カラーピッカー関連の関数
+        function switchPickerTab(tabName) {
+            // タブの切り替え
+            document.querySelectorAll('.picker-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.picker-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Picker').classList.add('active');
+            
+            if (tabName === 'spectrum') {
+                initializeSpectrumPicker();
+            }
+        }
+
+        function updatePickerDisplay() {
+            const hex = rgbToHex(currentPickerColor.r, currentPickerColor.g, currentPickerColor.b);
+            
+            // プレビューを更新
+            document.getElementById('pickerPreview').style.backgroundColor = hex;
+            document.getElementById('pickerHex').textContent = hex;
+            document.getElementById('pickerRgb').textContent = `${Math.round(currentPickerColor.r)}, ${Math.round(currentPickerColor.g)}, ${Math.round(currentPickerColor.b)}`;
+            
+            // スライダーを更新
+            document.getElementById('redSlider').value = currentPickerColor.r;
+            document.getElementById('greenSlider').value = currentPickerColor.g;
+            document.getElementById('blueSlider').value = currentPickerColor.b;
+            document.getElementById('redValue').textContent = Math.round(currentPickerColor.r);
+            document.getElementById('greenValue').textContent = Math.round(currentPickerColor.g);
+            document.getElementById('blueValue').textContent = Math.round(currentPickerColor.b);
+        }
+
+        function initializeSpectrumPicker() {
+            const spectrumCanvas = document.getElementById('spectrumCanvas');
+            const cursor = document.getElementById('spectrumCursor');
+            
+            let isDragging = false;
+            
+            function updateSpectrumColor(x, y) {
+                const rect = spectrumCanvas.getBoundingClientRect();
+                const relX = Math.max(0, Math.min(1, x / rect.width));
+                const relY = Math.max(0, Math.min(1, y / rect.height));
+                
+                // HSVからRGBに変換
+                const hue = relX * 360;
+                const saturation = 1 - relY;
+                const value = 1 - relY;
+                
+                const rgb = hsvToRgb(hue, saturation, value);
+                currentPickerColor = rgb;
+                updatePickerDisplay();
+                
+                // カーソル位置を更新
+                cursor.style.left = (relX * 100) + '%';
+                cursor.style.top = (relY * 100) + '%';
+            }
+            
+            spectrumCanvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                const rect = spectrumCanvas.getBoundingClientRect();
+                updateSpectrumColor(e.clientX - rect.left, e.clientY - rect.top);
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const rect = spectrumCanvas.getBoundingClientRect();
+                updateSpectrumColor(e.clientX - rect.left, e.clientY - rect.top);
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+
         function hsvToRgb(h, s, v) {
             h = h / 360;
             const c = v * s;
@@ -926,188 +1238,19 @@
             };
         }
 
-        // 混色ロジック（改善版）
-        function additiveMix(colors, weights) {
-            let totalWeight = weights.reduce((sum, w) => sum + w, 0);
-            if (totalWeight === 0) return { r: 0, g: 0, b: 0 };
-
-            let r = 0, g = 0, b = 0;
-            colors.forEach((color, i) => {
-                const rgb = hexToRgb(color);
-                const weight = weights[i] / totalWeight;
-                r += Math.pow(rgb.r / 255, 2.2) * weight;
-                g += Math.pow(rgb.g / 255, 2.2) * weight;
-                b += Math.pow(rgb.b / 255, 2.2) * weight;
-            });
-
-            return {
-                r: Math.min(255, Math.pow(r, 1/2.2) * 255),
-                g: Math.min(255, Math.pow(g, 1/2.2) * 255),
-                b: Math.min(255, Math.pow(b, 1/2.2) * 255)
-            };
-        }
-
-        function subtractiveMix(colors, weights) {
-            let totalWeight = weights.reduce((sum, w) => sum + w, 0);
-            if (totalWeight === 0) return { r: 255, g: 255, b: 255 };
-
-            let c = 0, m = 0, y = 0;
-            colors.forEach((color, i) => {
-                const rgb = hexToRgb(color);
-                const cmy = rgbToCmy(rgb.r, rgb.g, rgb.b);
-                const weight = weights[i] / totalWeight;
-                c += cmy.c * weight;
-                m += cmy.m * weight;
-                y += cmy.y * weight;
-            });
-
-            return cmyToRgb(Math.min(1, c), Math.min(1, m), Math.min(1, y));
-        }
-
-        // UI 関数
-        function createColorSlot() {
-            const slotId = nextSlotId++;
-            const slot = {
-                id: slotId,
-                color: generateRandomColor(),
-                ratio: 50
-            };
-            colorSlots.push(slot);
-            return slot;
-        }
-
-        function generateRandomColor() {
-            const colors = [
-                '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
-                '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F',
-                '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA'
-            ];
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-
-        function addColorSlot() {
-            if (colorSlots.length >= 6) return;
-            
-            createColorSlot();
-            updateSlotRatios();
-            renderColorSlots();
-            updateMixedColor();
-            updateAddButton();
-        }
-
-        function removeColorSlot(slotId) {
-            if (colorSlots.length <= 2) return;
-            
-            colorSlots = colorSlots.filter(slot => slot.id !== slotId);
-            updateSlotRatios();
-            renderColorSlots();
-            updateMixedColor();
-            updateAddButton();
-        }
-
-        function updateSlotRatios() {
-            if (colorSlots.length === 0) return;
-            
-            const equalRatio = 100 / colorSlots.length;
-            colorSlots.forEach(slot => {
-                slot.ratio = equalRatio;
-            });
-        }
-
-        function updateAddButton() {
-            const addBtn = document.getElementById('addSlotBtn');
-            addBtn.disabled = colorSlots.length >= 6;
-            addBtn.textContent = colorSlots.length >= 6 ? '最大6色まで' : '＋ 色を追加';
-        }
-
-        function renderColorSlots() {
-            const container = document.getElementById('colorSlots');
-            container.innerHTML = '';
-
-            colorSlots.forEach((slot, index) => {
-                const slotElement = document.createElement('div');
-                slotElement.className = 'slot fade-in';
-                slotElement.style.animationDelay = `${index * 0.1}s`;
-                
-                slotElement.innerHTML = `
-                    <div class="color-preview" style="background-color: ${slot.color}" onclick="openColorPicker(${slot.id})"></div>
-                    <div class="color-input">
-                        <input type="text" value="${slot.color}" onchange="updateColor(${slot.id}, this.value)" maxlength="7">
-                    </div>
-                    <div class="ratio-control">
-                        <label>比率</label>
-                        <div class="ratio-slider-container">
-                            <input type="range" class="ratio-slider" min="1" max="100" value="${slot.ratio}" 
-                                   oninput="updateRatio(${slot.id}, this.value)" step="1">
-                        </div>
-                        <div class="ratio-value">${Math.round(slot.ratio)}%</div>
-                    </div>
-                    ${colorSlots.length > 2 ? `<button class="delete-btn" onclick="removeColorSlot(${slot.id})">削除</button>` : '<div style="width: 60px;"></div>'}
-                `;
-                container.appendChild(slotElement);
-            });
-        }
-
-        // カラーピッカー関数
-        function openColorPicker(slotId) {
-            currentEditingSlotId = slotId;
-            const slot = colorSlots.find(s => s.id === slotId);
-            if (!slot) return;
-
-            currentPickerColor = hexToRgb(slot.color);
-            
-            document.getElementById('colorPickerModal').classList.add('show');
-            document.body.style.overflow = 'hidden';
-            
-            initializeGridPicker();
-            updatePickerDisplay();
-            setupSliderEvents();
-            initializeSpectrumPicker();
-        }
-
-        function closeColorPicker() {
-            document.getElementById('colorPickerModal').classList.remove('show');
-            document.body.style.overflow = 'auto';
-            currentEditingSlotId = null;
-        }
-
-        function switchPickerTab(tabName) {
-            // タブの切り替え
-            document.querySelectorAll('.picker-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.picker-panel').forEach(panel => panel.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabName + 'Picker').classList.add('active');
-            
-            if (tabName === 'spectrum') {
-                setTimeout(() => initializeSpectrumPicker(), 100);
-            } else if (tabName === 'grid') {
-                initializeGridPicker();
-            }
-        }
-
         function initializeGridPicker() {
             const gridContainer = document.getElementById('gridColors');
             gridContainer.innerHTML = '';
             
-            // 基本色のパレット（8x8グリッド）
+            // 基本色のパレット
             const basicColors = [
-                // 1行目 - 基本色
-                '#FF0000', '#FF4000', '#FF8000', '#FFBF00', '#FFFF00', '#BFFF00', '#80FF00', '#40FF00',
-                // 2行目 - 緑系
-                '#00FF00', '#00FF40', '#00FF80', '#00FFBF', '#00FFFF', '#00BFFF', '#0080FF', '#0040FF',
-                // 3行目 - 青系
-                '#0000FF', '#4000FF', '#8000FF', '#BF00FF', '#FF00FF', '#FF00BF', '#FF0080', '#FF0040',
-                // 4行目 - 暗い色
-                '#800000', '#804000', '#808000', '#408000', '#008000', '#008040', '#008080', '#004080',
-                // 5行目 - 青・紫系
-                '#000080', '#400080', '#800080', '#800040', '#400000', '#402000', '#404000', '#204000',
-                // 6行目 - グレースケール
-                '#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#FFFFFF', '#EEEEEE', '#DDDDDD',
-                // 7行目 - パステルカラー
-                '#FFE0E0', '#E0FFE0', '#E0E0FF', '#FFFFE0', '#FFE0FF', '#E0FFFF', '#F0F0F0', '#FFF0F0',
-                // 8行目 - 鮮やかな色
-                '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'
+                '#FF0000', '#FF8000', '#FFFF00', '#80FF00', '#00FF00', '#00FF80', '#00FFFF', '#0080FF',
+                '#0000FF', '#8000FF', '#FF00FF', '#FF0080', '#800000', '#804000', '#808000', '#408000',
+                '#008000', '#008040', '#008080', '#004080', '#000080', '#400080', '#800080', '#800040',
+                '#400000', '#402000', '#404000', '#204000', '#004000', '#002020', '#004040', '#002040',
+                '#000040', '#200040', '#400040', '#400020', '#FFFFFF', '#E0E0E0', '#C0C0C0', '#A0A0A0',
+                '#808080', '#606060', '#404040', '#202020', '#000000', '#FFE0E0', '#E0FFE0', '#E0E0FF',
+                '#FFFFE0', '#FFE0FF', '#E0FFFF', '#F0F0F0', '#FFF0F0'
             ];
             
             basicColors.forEach(color => {
@@ -1125,76 +1268,10 @@
             });
         }
 
-        function initializeSpectrumPicker() {
-            const spectrumCanvas = document.getElementById('spectrumCanvas');
-            const cursor = document.getElementById('spectrumCursor');
-            
-            if (!spectrumCanvas) return;
-            
-            let isDragging = false;
-            
-            function updateSpectrumColor(x, y) {
-                const rect = spectrumCanvas.getBoundingClientRect();
-                const relX = Math.max(0, Math.min(1, x / rect.width));
-                const relY = Math.max(0, Math.min(1, y / rect.height));
-                
-                // HSVからRGBに変換
-                const hue = relX * 360;
-                const saturation = 1 - relY;
-                const value = 1;
-                
-                const rgb = hsvToRgb(hue, saturation, value);
-                currentPickerColor = rgb;
-                updatePickerDisplay();
-                
-                // カーソル位置を更新
-                cursor.style.left = (relX * 100) + '%';
-                cursor.style.top = (relY * 100) + '%';
-            }
-            
-            spectrumCanvas.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                const rect = spectrumCanvas.getBoundingClientRect();
-                updateSpectrumColor(e.clientX - rect.left, e.clientY - rect.top);
-            });
-            
-            spectrumCanvas.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                isDragging = true;
-                const touch = e.touches[0];
-                const rect = spectrumCanvas.getBoundingClientRect();
-                updateSpectrumColor(touch.clientX - rect.left, touch.clientY - rect.top);
-            });
-            
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                const rect = spectrumCanvas.getBoundingClientRect();
-                updateSpectrumColor(e.clientX - rect.left, e.clientY - rect.top);
-            });
-            
-            document.addEventListener('touchmove', (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-                const touch = e.touches[0];
-                const rect = spectrumCanvas.getBoundingClientRect();
-                updateSpectrumColor(touch.clientX - rect.left, touch.clientY - rect.top);
-            });
-            
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
-            
-            document.addEventListener('touchend', () => {
-                isDragging = false;
-            });
-        }
-
         function setupSliderEvents() {
             const redSlider = document.getElementById('redSlider');
             const greenSlider = document.getElementById('greenSlider');
             const blueSlider = document.getElementById('blueSlider');
-            
-            if (!redSlider || !greenSlider || !blueSlider) return;
             
             redSlider.oninput = () => {
                 currentPickerColor.r = parseInt(redSlider.value);
@@ -1212,42 +1289,6 @@
             };
         }
 
-        function updatePickerDisplay() {
-            const hex = rgbToHex(currentPickerColor.r, currentPickerColor.g, currentPickerColor.b);
-            
-            // プレビューを更新
-            const previewElement = document.getElementById('pickerPreviewColor');
-            const infoElement = document.getElementById('pickerPreviewInfo');
-            
-            if (previewElement) {
-                previewElement.style.backgroundColor = hex;
-            }
-            if (infoElement) {
-                infoElement.textContent = hex.toUpperCase();
-            }
-            
-            // スライダーを更新
-            const redSlider = document.getElementById('redSlider');
-            const greenSlider = document.getElementById('greenSlider');
-            const blueSlider = document.getElementById('blueSlider');
-            const redValue = document.getElementById('redValue');
-            const greenValue = document.getElementById('greenValue');
-            const blueValue = document.getElementById('blueValue');
-            
-            if (redSlider) {
-                redSlider.value = currentPickerColor.r;
-                redValue.textContent = Math.round(currentPickerColor.r);
-            }
-            if (greenSlider) {
-                greenSlider.value = currentPickerColor.g;
-                greenValue.textContent = Math.round(currentPickerColor.g);
-            }
-            if (blueSlider) {
-                blueSlider.value = currentPickerColor.b;
-                blueValue.textContent = Math.round(currentPickerColor.b);
-            }
-        }
-
         function applyColor() {
             if (currentEditingSlotId) {
                 const slot = colorSlots.find(s => s.id === currentEditingSlotId);
@@ -1260,151 +1301,211 @@
             closeColorPicker();
         }
 
-        function updateColor(slotId, color) {
-            const slot = colorSlots.find(s => s.id === slotId);
-            if (!slot) return;
-
-            // HEX形式の検証と修正
-            if (!/^#[0-9A-F]{6}$/i.test(color)) {
-                if (!/^#/.test(color)) color = '#' + color;
-                color = color.slice(0, 7).padEnd(7, '0');
-                if (!/^#[0-9A-F]{6}$/i.test(color)) return;
+        // 逆算分析機能
+        function performReverseAnalysis(targetHex) {
+            try {
+                const targetRgb = hexToRgb(targetHex);
+                
+                let recipes;
+                if (currentAnalysisMode === 'additive') {
+                    recipes = findColorRecipes(targetRgb, 'additive');
+                } else {
+                    recipes = findColorRecipes(targetRgb, 'subtractive');
+                }
+                
+                displayAnalysisResults(recipes);
+            } catch (error) {
+                document.getElementById('analysisContent').innerHTML = '<div class="no-results">分析中にエラーが発生しました</div>';
             }
-
-            slot.color = color.toUpperCase();
-            renderColorSlots();
-            updateMixedColor();
         }
 
-        function updateRatio(slotId, ratio) {
-            const slot = colorSlots.find(s => s.id === slotId);
-            if (!slot) return;
-
-            slot.ratio = parseFloat(ratio);
+        function findColorRecipes(targetRgb, mode) {
+            const recipes = [];
+            const baseColorNames = Object.keys(baseColors);
             
-            // リアルタイム更新
-            const ratioValueElement = event.target.parentNode.nextElementSibling;
-            ratioValueElement.textContent = `${Math.round(slot.ratio)}%`;
-            
-            updateMixedColor();
+            try {
+                // 2色の組み合わせを試す
+                for (let i = 0; i < baseColorNames.length; i++) {
+                    for (let j = i + 1; j < baseColorNames.length; j++) {
+                        const recipe = findBestRatio2Colors(targetRgb, baseColors[baseColorNames[i]], baseColors[baseColorNames[j]], mode);
+                        if (recipe.accuracy > 0.7) {
+                            recipes.push({
+                                colors: [baseColorNames[i], baseColorNames[j]],
+                                hexColors: [baseColors[baseColorNames[i]], baseColors[baseColorNames[j]]],
+                                ratios: recipe.ratios,
+                                accuracy: recipe.accuracy,
+                                count: 2
+                            });
+                        }
+                    }
+                }
+                
+                // 3色の組み合わせを試す（主要色のみ）
+                const primaryColors = ['赤', '緑', '青', '黄', 'シアン', 'マゼンタ'];
+                for (let i = 0; i < primaryColors.length; i++) {
+                    for (let j = i + 1; j < primaryColors.length; j++) {
+                        for (let k = j + 1; k < primaryColors.length; k++) {
+                            const recipe = findBestRatio3Colors(targetRgb, 
+                                baseColors[primaryColors[i]], 
+                                baseColors[primaryColors[j]], 
+                                baseColors[primaryColors[k]], mode);
+                            if (recipe.accuracy > 0.8) {
+                                recipes.push({
+                                    colors: [primaryColors[i], primaryColors[j], primaryColors[k]],
+                                    hexColors: [baseColors[primaryColors[i]], baseColors[primaryColors[j]], baseColors[primaryColors[k]]],
+                                    ratios: recipe.ratios,
+                                    accuracy: recipe.accuracy,
+                                    count: 3
+                                });
+                            }
+                        }
+                    }
+                }
+                
+                // 精度でソートして上位4つを返す
+                return recipes.sort((a, b) => b.accuracy - a.accuracy).slice(0, 4);
+                
+            } catch (error) {
+                return [];
+            }
         }
 
-        function updateMixedColor() {
-            if (colorSlots.length === 0) {
-                const defaultColor = { r: 128, g: 128, b: 128 };
-                displayResult(defaultColor);
+        function findBestRatio2Colors(targetRgb, color1Hex, color2Hex, mode) {
+            let bestRatio = [50, 50];
+            let bestAccuracy = 0;
+            
+            try {
+                // 10%刻みで比率を試す（軽量化）
+                for (let ratio1 = 10; ratio1 <= 90; ratio1 += 10) {
+                    const ratio2 = 100 - ratio1;
+                    const colors = [color1Hex, color2Hex];
+                    const weights = [ratio1, ratio2];
+                    
+                    let mixedRgb;
+                    if (mode === 'additive') {
+                        mixedRgb = additiveMix(colors, weights);
+                    } else {
+                        mixedRgb = subtractiveMix(colors, weights);
+                    }
+                    
+                    const accuracy = calculateColorAccuracy(targetRgb, mixedRgb);
+                    if (accuracy > bestAccuracy) {
+                        bestAccuracy = accuracy;
+                        bestRatio = [ratio1, ratio2];
+                    }
+                }
+            } catch (error) {
+                // エラー時はデフォルト値を返す
+            }
+            
+            return { ratios: bestRatio, accuracy: bestAccuracy };
+        }
+
+        function findBestRatio3Colors(targetRgb, color1Hex, color2Hex, color3Hex, mode) {
+            let bestRatio = [33, 33, 34];
+            let bestAccuracy = 0;
+            
+            try {
+                // 20%刻みで比率を試す（さらに軽量化）
+                for (let ratio1 = 20; ratio1 <= 60; ratio1 += 20) {
+                    for (let ratio2 = 20; ratio2 <= 80 - ratio1; ratio2 += 20) {
+                        const ratio3 = 100 - ratio1 - ratio2;
+                        if (ratio3 < 20) continue;
+                        
+                        const colors = [color1Hex, color2Hex, color3Hex];
+                        const weights = [ratio1, ratio2, ratio3];
+                        
+                        let mixedRgb;
+                        if (mode === 'additive') {
+                            mixedRgb = additiveMix(colors, weights);
+                        } else {
+                            mixedRgb = subtractiveMix(colors, weights);
+                        }
+                        
+                        const accuracy = calculateColorAccuracy(targetRgb, mixedRgb);
+                        if (accuracy > bestAccuracy) {
+                            bestAccuracy = accuracy;
+                            bestRatio = [ratio1, ratio2, ratio3];
+                        }
+                    }
+                }
+            } catch (error) {
+                // エラー時はデフォルト値を返す
+            }
+            
+            return { ratios: bestRatio, accuracy: bestAccuracy };
+        }
+
+        function calculateColorAccuracy(target, mixed) {
+            try {
+                const rDiff = Math.abs(target.r - mixed.r) / 255;
+                const gDiff = Math.abs(target.g - mixed.g) / 255;
+                const bDiff = Math.abs(target.b - mixed.b) / 255;
+                const avgDiff = (rDiff + gDiff + bDiff) / 3;
+                return Math.max(0, 1 - avgDiff);
+            } catch (error) {
+                return 0;
+            }
+        }
+
+        function switchAnalysisMode(mode, evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            
+            currentAnalysisMode = mode;
+            document.querySelectorAll('.analysis-tab').forEach(tab => tab.classList.remove('active'));
+            evt.target.classList.add('active');
+            
+            // 現在の結果色で再分析
+            const currentHex = document.getElementById('hexValue').textContent;
+            if (currentHex && currentHex !== '#808080') {
+                performReverseAnalysis(currentHex);
+            }
+        }
+
+        function displayAnalysisResults(recipes) {
+            const container = document.getElementById('analysisContent');
+            
+            if (!recipes || recipes.length === 0) {
+                container.innerHTML = `<div class="no-results">${currentAnalysisMode === 'additive' ? '加法混色' : '減法混色'}での組み合わせが見つかりませんでした</div>`;
                 return;
             }
-
-            const colors = colorSlots.map(slot => slot.color);
-            const weights = colorSlots.map(slot => slot.ratio);
-
-            let result;
-            if (mixingMode === 'additive') {
-                result = additiveMix(colors, weights);
-            } else {
-                result = subtractiveMix(colors, weights);
-            }
-
-            displayResult(result);
-        }
-
-        function displayResult(rgb) {
-            const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
-            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-
-            const resultElement = document.getElementById('resultColor');
-            resultElement.style.backgroundColor = hex;
             
-            document.getElementById('hexValue').textContent = hex.toUpperCase();
-            document.getElementById('rgbValue').textContent = `RGB(${Math.round(rgb.r)}, ${Math.round(rgb.g)}, ${Math.round(rgb.b)})`;
-            document.getElementById('hslValue').textContent = `HSL(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
-        }
-
-        function copyColor(format) {
-            let textToCopy;
-            if (format === 'hex') {
-                textToCopy = document.getElementById('hexValue').textContent;
-            } else if (format === 'rgb') {
-                textToCopy = document.getElementById('rgbValue').textContent;
-            } else if (format === 'hsl') {
-                textToCopy = document.getElementById('hslValue').textContent;
-            }
-
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showCopyNotification();
+            let html = '';
+            recipes.forEach((recipe, index) => {
+                const accuracyPercent = Math.round(recipe.accuracy * 100);
+                
+                html += `
+                    <div class="recipe-item">
+                        <div class="recipe-colors">
+                            ${recipe.hexColors.map((color, i) => `
+                                <div class="recipe-color-chip" style="background-color: ${color}">
+                                    <div class="recipe-ratio">${recipe.ratios[i]}%</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="recipe-description">
+                            <strong>${recipe.colors.join(' + ')}</strong><br>
+                            比率: ${recipe.ratios.map((r, i) => `${recipe.colors[i]}${r}%`).join(' + ')}<br>
+                            <small>${currentAnalysisMode === 'additive' ? '光の混合' : '絵の具の混合'}</small>
+                        </div>
+                        <div class="recipe-accuracy">${accuracyPercent}%</div>
+                    </div>
+                `;
             });
-        }
-
-        function showCopyNotification() {
-            const notification = document.getElementById('copyNotification');
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2500);
-        }
-
-        // 混色モード切り替え
-        function setupModeToggle() {
-            document.querySelectorAll('.mode-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    const mode = this.getAttribute('data-mode');
-                    setMixingMode(mode);
-                });
-            });
-        }
-
-        function setMixingMode(mode) {
-            mixingMode = mode;
-            document.querySelectorAll('.mode-option').forEach(option => {
-                option.classList.remove('active');
-            });
-            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
-            updateMixedColor();
-        }
-
-        // モーダル外クリックで閉じる
-        document.getElementById('colorPickerModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeColorPicker();
-            }
-        });
-
-        // ESCキーで閉じる
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeColorPicker();
-            }
             
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
-                    case '+':
-                    case '=':
-                        e.preventDefault();
-                        addColorSlot();
-                        break;
-                    case 'c':
-                        if (e.shiftKey) {
-                            e.preventDefault();
-                            copyColor('hex');
-                        }
-                        break;
-                }
-            }
-        });
+            container.innerHTML = html;
+        }
 
         // 初期化
         function init() {
-            // 初期色を3つ追加
+            // 初期色を2つ追加
             createColorSlot();
             createColorSlot();
-            createColorSlot();
-            
             updateSlotRatios();
             renderColorSlots();
             updateMixedColor();
             updateAddButton();
-            setupModeToggle();
         }
 
         // ページ読み込み時に初期化
