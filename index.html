@@ -972,4 +972,415 @@
             let totalWeight = weights.reduce((sum, w) => sum + w, 0);
             if (totalWeight === 0) return { r: 128, g: 128, b: 128 };
 
-            let c = 0,
+            let c = 0, m = 0, y = 0;
+            colors.forEach((color, i) => {
+                const rgb = hexToRgb(color);
+                const cmy = rgbToCmy(rgb.r, rgb.g, rgb.b);
+                const weight = weights[i] / totalWeight;
+                c += cmy.c * weight;
+                m += cmy.m * weight;
+                y += cmy.y * weight;
+            });
+
+            return cmyToRgb(c, m, y);
+        }
+
+        // UI 関数
+        function createColorSlot() {
+            const slotId = nextSlotId++;
+            const slot = {
+                id: slotId,
+                color: generateRandomColor(),
+                ratio: 100
+            };
+            colorSlots.push(slot);
+            return slot;
+        }
+
+        function generateRandomColor() {
+            return "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        }
+
+        function addColorSlot() {
+            if (colorSlots.length >= 4) return;
+            
+            createColorSlot();
+            updateSlotRatios();
+            renderColorSlots();
+            updateMixedColor();
+            updateAddButton();
+        }
+
+        function removeColorSlot(slotId) {
+            colorSlots = colorSlots.filter(slot => slot.id !== slotId);
+            updateSlotRatios();
+            renderColorSlots();
+            updateMixedColor();
+            updateAddButton();
+        }
+
+        function updateSlotRatios() {
+            if (colorSlots.length === 0) return;
+            
+            const equalRatio = 100 / colorSlots.length;
+            colorSlots.forEach(slot => {
+                slot.ratio = equalRatio;
+            });
+        }
+
+        function updateAddButton() {
+            const addBtn = document.getElementById('addSlotBtn');
+            addBtn.disabled = colorSlots.length >= 4;
+            addBtn.textContent = colorSlots.length >= 4 ? '最大4色まで' : '＋ 色を追加';
+        }
+
+        function renderColorSlots() {
+            const container = document.getElementById('colorSlots');
+            container.innerHTML = '';
+
+            colorSlots.forEach(slot => {
+                const slotElement = document.createElement('div');
+                slotElement.className = 'slot';
+                slotElement.innerHTML = `
+                    <div class="slot-header">
+                        <div class="color-preview" style="background-color: ${slot.color}" onclick="openColorPicker(${slot.id})"></div>
+                        <div class="color-input">
+                            <input type="text" value="${slot.color}" onchange="updateColor(${slot.id}, this.value)" maxlength="7">
+                        </div>
+                    </div>
+                    <div class="slot-controls">
+                        <div class="ratio-control">
+                            <label>比率</label>
+                            <input type="range" class="ratio-slider" min="1" max="100" value="${slot.ratio}" 
+                                   onchange="updateRatio(${slot.id}, this.value)">
+                            <span class="ratio-value">${Math.round(slot.ratio)}%</span>
+                        </div>
+                        <button class="delete-btn" onclick="removeColorSlot(${slot.id})">削除</button>
+                    </div>
+                `;
+                container.appendChild(slotElement);
+            });
+        }
+
+        function openColorPicker(slotId) {
+            currentEditingSlotId = slotId;
+            const slot = colorSlots.find(s => s.id === slotId);
+            if (!slot) return;
+
+            currentPickerColor = hexToRgb(slot.color);
+            updatePickerDisplay();
+            document.getElementById('colorPickerModal').style.display = 'flex';
+            initializeGridPicker();
+        }
+
+        function closeColorPicker() {
+            document.getElementById('colorPickerModal').style.display = 'none';
+            currentEditingSlotId = null;
+        }
+
+        function updateColor(slotId, color) {
+            const slot = colorSlots.find(s => s.id === slotId);
+            if (!slot) return;
+
+            // HEX形式の検証
+            if (!/^#[0-9A-F]{6}$/i.test(color)) {
+                if (!/^#/.test(color)) color = '#' + color;
+                if (!/^#[0-9A-F]{6}$/i.test(color)) return;
+            }
+
+            slot.color = color.toUpperCase();
+            renderColorSlots();
+            updateMixedColor();
+        }
+
+        function updateRatio(slotId, ratio) {
+            const slot = colorSlots.find(s => s.id === slotId);
+            if (!slot) return;
+
+            slot.ratio = parseFloat(ratio);
+            renderColorSlots();
+            updateMixedColor();
+        }
+
+        function setMixingMode(mode) {
+            mixingMode = mode;
+            document.querySelectorAll('.mode-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            updateMixedColor();
+        }
+
+        function updateMixedColor() {
+            if (colorSlots.length === 0) {
+                const defaultColor = { r: 128, g: 128, b: 128 };
+                displayResult(defaultColor);
+                return;
+            }
+
+            const colors = colorSlots.map(slot => slot.color);
+            const weights = colorSlots.map(slot => slot.ratio);
+
+            let result;
+            if (mixingMode === 'additive') {
+                result = additiveMix(colors, weights);
+            } else {
+                result = subtractiveMix(colors, weights);
+            }
+
+            displayResult(result);
+        }
+
+        function displayResult(rgb) {
+            const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+            document.getElementById('resultColor').style.backgroundColor = hex;
+            document.getElementById('hexValue').textContent = hex;
+            document.getElementById('rgbValue').textContent = `RGB(${Math.round(rgb.r)}, ${Math.round(rgb.g)}, ${Math.round(rgb.b)})`;
+            document.getElementById('hslValue').textContent = `HSL(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+            
+            // 逆算分析を実行
+            performReverseAnalysis(hex);
+        }
+
+        function copyColor(format) {
+            let textToCopy;
+            if (format === 'hex') {
+                textToCopy = document.getElementById('hexValue').textContent;
+            } else if (format === 'rgb') {
+                textToCopy = document.getElementById('rgbValue').textContent;
+            } else if (format === 'hsl') {
+                textToCopy = document.getElementById('hslValue').textContent;
+            }
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showCopyNotification();
+            });
+        }
+
+        function showCopyNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        function switchPickerTab(tabName) {
+            // タブの切り替え
+            document.querySelectorAll('.picker-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.picker-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Picker').classList.add('active');
+        }
+
+        function updatePickerDisplay() {
+            const hex = rgbToHex(currentPickerColor.r, currentPickerColor.g, currentPickerColor.b);
+            
+            // プレビューを更新
+            document.getElementById('pickerPreview').style.backgroundColor = hex;
+            document.getElementById('pickerHex').textContent = hex;
+            document.getElementById('pickerRgb').textContent = `${Math.round(currentPickerColor.r)}, ${Math.round(currentPickerColor.g)}, ${Math.round(currentPickerColor.b)}`;
+        }
+
+        function initializeGridPicker() {
+            const gridContainer = document.getElementById('gridColors');
+            gridContainer.innerHTML = '';
+            
+            // 基本色のパレット
+            const basicColors = [
+                '#FF0000', '#FF8000', '#FFFF00', '#80FF00', '#00FF00', '#00FF80', 
+                '#00FFFF', '#0080FF', '#0000FF', '#8000FF', '#FF00FF', '#FF0080',
+                '#800000', '#804000', '#808000', '#408000', '#008000', '#008040', 
+                '#008080', '#004080', '#000080', '#400080', '#800080', '#800040',
+                '#400000', '#402000', '#404000', '#204000', '#004000', '#002020', 
+                '#004040', '#002040', '#000040', '#200040', '#400040', '#400020',
+                '#FFFFFF', '#E0E0E0', '#C0C0C0', '#A0A0A0', '#808080', '#606060', 
+                '#404040', '#202020', '#000000', '#FFE0E0', '#E0FFE0', '#E0E0FF',
+                '#FFFFE0', '#FFE0FF', '#E0FFFF', '#F0F0F0', '#FFF0F0', '#F0FFF0'
+            ];
+            
+            basicColors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'grid-color';
+                colorDiv.style.backgroundColor = color;
+                colorDiv.onclick = () => {
+                    currentPickerColor = hexToRgb(color);
+                    updatePickerDisplay();
+                    // 選択状態を更新
+                    document.querySelectorAll('.grid-color').forEach(c => c.classList.remove('selected'));
+                    colorDiv.classList.add('selected');
+                };
+                gridContainer.appendChild(colorDiv);
+            });
+        }
+
+        function applyColor() {
+            if (currentEditingSlotId) {
+                const slot = colorSlots.find(s => s.id === currentEditingSlotId);
+                if (slot) {
+                    slot.color = rgbToHex(currentPickerColor.r, currentPickerColor.g, currentPickerColor.b);
+                    renderColorSlots();
+                    updateMixedColor();
+                }
+            }
+            closeColorPicker();
+        }
+
+        // 逆算分析機能
+        function performReverseAnalysis(targetHex) {
+            try {
+                const targetRgb = hexToRgb(targetHex);
+                
+                let recipes;
+                if (currentAnalysisMode === 'additive') {
+                    recipes = findColorRecipes(targetRgb, 'additive');
+                } else {
+                    recipes = findColorRecipes(targetRgb, 'subtractive');
+                }
+                
+                displayAnalysisResults(recipes);
+            } catch (error) {
+                document.getElementById('analysisContent').innerHTML = '<div class="no-results">分析中にエラーが発生しました</div>';
+            }
+        }
+
+        function findColorRecipes(targetRgb, mode) {
+            const recipes = [];
+            const baseColorNames = Object.keys(baseColors);
+            
+            try {
+                // 2色の組み合わせを試す
+                for (let i = 0; i < baseColorNames.length; i++) {
+                    for (let j = i + 1; j < baseColorNames.length; j++) {
+                        const recipe = findBestRatio2Colors(targetRgb, baseColors[baseColorNames[i]], baseColors[baseColorNames[j]], mode);
+                        if (recipe.accuracy > 0.7) {
+                            recipes.push({
+                                colors: [baseColorNames[i], baseColorNames[j]],
+                                hexColors: [baseColors[baseColorNames[i]], baseColors[baseColorNames[j]]],
+                                ratios: recipe.ratios,
+                                accuracy: recipe.accuracy,
+                                count: 2
+                            });
+                        }
+                    }
+                }
+                
+                // 精度でソートして上位4つを返す
+                return recipes.sort((a, b) => b.accuracy - a.accuracy).slice(0, 4);
+                
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function findBestRatio2Colors(targetRgb, color1Hex, color2Hex, mode) {
+            let bestRatio = [50, 50];
+            let bestAccuracy = 0;
+            
+            try {
+                // 10%刻みで比率を試す
+                for (let ratio1 = 10; ratio1 <= 90; ratio1 += 10) {
+                    const ratio2 = 100 - ratio1;
+                    const colors = [color1Hex, color2Hex];
+                    const weights = [ratio1, ratio2];
+                    
+                    let mixedRgb;
+                    if (mode === 'additive') {
+                        mixedRgb = additiveMix(colors, weights);
+                    } else {
+                        mixedRgb = subtractiveMix(colors, weights);
+                    }
+                    
+                    const accuracy = calculateColorAccuracy(targetRgb, mixedRgb);
+                    if (accuracy > bestAccuracy) {
+                        bestAccuracy = accuracy;
+                        bestRatio = [ratio1, ratio2];
+                    }
+                }
+            } catch (error) {
+                // エラー時はデフォルト値を返す
+            }
+            
+            return { ratios: bestRatio, accuracy: bestAccuracy };
+        }
+
+        function calculateColorAccuracy(target, mixed) {
+            try {
+                const rDiff = Math.abs(target.r - mixed.r) / 255;
+                const gDiff = Math.abs(target.g - mixed.g) / 255;
+                const bDiff = Math.abs(target.b - mixed.b) / 255;
+                const avgDiff = (rDiff + gDiff + bDiff) / 3;
+                return Math.max(0, 1 - avgDiff);
+            } catch (error) {
+                return 0;
+            }
+        }
+
+        function switchAnalysisMode(mode, evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            
+            currentAnalysisMode = mode;
+            document.querySelectorAll('.analysis-tab').forEach(tab => tab.classList.remove('active'));
+            evt.target.classList.add('active');
+            
+            // 現在の結果色で再分析
+            const currentHex = document.getElementById('hexValue').textContent;
+            if (currentHex && currentHex !== '#808080') {
+                performReverseAnalysis(currentHex);
+            }
+        }
+
+        function displayAnalysisResults(recipes) {
+            const container = document.getElementById('analysisContent');
+            
+            if (!recipes || recipes.length === 0) {
+                container.innerHTML = `<div class="no-results">${currentAnalysisMode === 'additive' ? '加法混色' : '減法混色'}での組み合わせが見つかりませんでした</div>`;
+                return;
+            }
+            
+            let html = '';
+            recipes.forEach((recipe, index) => {
+                const accuracyPercent = Math.round(recipe.accuracy * 100);
+                
+                html += `
+                    <div class="recipe-item">
+                        <div class="recipe-header">
+                            <div class="recipe-colors">
+                                ${recipe.hexColors.map((color, i) => `
+                                    <div class="recipe-color-chip" style="background-color: ${color}">
+                                        <div class="recipe-ratio">${recipe.ratios[i]}%</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="recipe-accuracy">${accuracyPercent}%</div>
+                        </div>
+                        <div class="recipe-description">
+                            <strong>${recipe.colors.join(' + ')}</strong><br>
+                            比率: ${recipe.ratios.map((r, i) => `${recipe.colors[i]}${r}%`).join(' + ')}<br>
+                            <small>${currentAnalysisMode === 'additive' ? '光の混合' : '絵の具の混合'}</small>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // 初期化
+        function init() {
+            // 初期色を2つ追加
+            createColorSlot();
+            createColorSlot();
+            updateSlotRatios();
+            renderColorSlots();
+            updateMixedColor();
+            updateAddButton();
+        }
+
+    </script>
+</body>
+</html>
