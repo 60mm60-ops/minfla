@@ -13,18 +13,20 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #e0e0e0;
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background: white;
+            background: #1e1e2e;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             overflow: hidden;
+            border: 1px solid #2a2a3e;
         }
 
         .header {
@@ -37,7 +39,7 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .header p {
@@ -47,6 +49,7 @@
 
         .main-content {
             padding: 30px;
+            background: #1e1e2e;
         }
 
         .color-slots {
@@ -58,16 +61,17 @@
             align-items: center;
             margin-bottom: 15px;
             padding: 15px;
-            background: #f8f9fa;
+            background: #2a2a3e;
             border-radius: 10px;
             border: 2px solid transparent;
             transition: all 0.3s ease;
+            color: #e0e0e0;
         }
 
         .slot:hover {
             border-color: #4ecdc4;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .color-preview {
@@ -91,12 +95,14 @@
 
         .color-input input {
             padding: 8px 12px;
-            border: 2px solid #ddd;
+            border: 2px solid #3a3a4e;
             border-radius: 8px;
             font-family: monospace;
             font-size: 14px;
             width: 100px;
             transition: border-color 0.3s ease;
+            background: #1e1e2e;
+            color: #e0e0e0;
         }
 
         .color-input input:focus {
@@ -112,7 +118,7 @@
         .ratio-control label {
             display: block;
             font-size: 12px;
-            color: #666;
+            color: #b0b0b0;
             margin-bottom: 5px;
         }
 
@@ -120,7 +126,7 @@
             width: 100%;
             height: 8px;
             border-radius: 4px;
-            background: #ddd;
+            background: #3a3a4e;
             outline: none;
             appearance: none;
             cursor: pointer;
@@ -142,7 +148,7 @@
             min-width: 40px;
             text-align: center;
             font-weight: bold;
-            color: #333;
+            color: #e0e0e0;
         }
 
         .delete-btn {
@@ -183,7 +189,7 @@
         }
 
         .add-slot-btn:disabled {
-            background: #ccc;
+            background: #555;
             cursor: not-allowed;
             transform: none;
         }
@@ -195,12 +201,12 @@
 
         .mixing-mode h3 {
             margin-bottom: 15px;
-            color: #333;
+            color: #e0e0e0;
         }
 
         .mode-toggle {
             display: inline-flex;
-            background: #f1f3f4;
+            background: #2a2a3e;
             border-radius: 25px;
             padding: 5px;
             position: relative;
@@ -214,6 +220,7 @@
             font-weight: 500;
             position: relative;
             z-index: 2;
+            color: #b0b0b0;
         }
 
         .mode-option.active {
@@ -225,7 +232,7 @@
         .result-preview {
             text-align: center;
             padding: 30px;
-            background: #f8f9fa;
+            background: #2a2a3e;
             border-radius: 15px;
             margin-bottom: 20px;
         }
@@ -253,14 +260,16 @@
         }
 
         .color-value {
-            background: white;
+            background: #3a3a4e;
+            color: #e0e0e0;
             padding: 10px 15px;
             border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: monospace;
             font-weight: bold;
+            border: 1px solid #4a4a5e;
         }
 
         .color-value:hover {
@@ -297,7 +306,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             display: none;
             justify-content: center;
             align-items: center;
@@ -305,13 +314,14 @@
         }
 
         .color-picker-content {
-            background: white;
+            background: #1e1e2e;
             border-radius: 20px;
             padding: 30px;
             max-width: 400px;
             width: 90%;
             max-height: 90%;
             overflow-y: auto;
+            border: 1px solid #3a3a4e;
         }
 
         .color-picker-header {
@@ -323,7 +333,7 @@
 
         .color-picker-header h3 {
             margin: 0;
-            color: #333;
+            color: #e0e0e0;
         }
 
         .close-btn {
@@ -331,20 +341,21 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-            color: #666;
+            color: #b0b0b0;
             padding: 5px;
             border-radius: 50%;
             transition: background-color 0.3s ease;
         }
 
         .close-btn:hover {
-            background: #f0f0f0;
+            background: #3a3a4e;
+            color: #e0e0e0;
         }
 
         .picker-tabs {
             display: flex;
             margin-bottom: 20px;
-            background: #f8f9fa;
+            background: #2a2a3e;
             border-radius: 10px;
             padding: 5px;
         }
@@ -357,6 +368,7 @@
             border-radius: 8px;
             transition: all 0.3s ease;
             font-size: 14px;
+            color: #b0b0b0;
         }
 
         .picker-tab.active {
@@ -372,53 +384,6 @@
             display: block;
         }
 
-        /* スペクトラムピッカー */
-        .spectrum-picker {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(to right, 
-                #ff0000 0%, 
-                #ffff00 17%, 
-                #00ff00 33%, 
-                #00ffff 50%, 
-                #0000ff 67%, 
-                #ff00ff 83%, 
-                #ff0000 100%);
-            border-radius: 10px;
-            position: relative;
-            cursor: crosshair;
-            margin-bottom: 20px;
-        }
-
-        .spectrum-picker::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, 
-                rgba(255,255,255,1) 0%, 
-                rgba(255,255,255,0) 50%, 
-                rgba(0,0,0,0) 50%, 
-                rgba(0,0,0,1) 100%);
-            border-radius: 10px;
-            pointer-events: none;
-        }
-
-        .spectrum-cursor {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        /* グリッドピッカー */
         .grid-picker {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -436,7 +401,7 @@
         }
 
         .grid-color:hover {
-            border-color: #333;
+            border-color: #4ecdc4;
             transform: scale(1.1);
         }
 
@@ -445,58 +410,12 @@
             box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
         }
 
-        /* スライダーピッカー */
-        .slider-picker {
-            margin-bottom: 20px;
-        }
-
-        .slider-group {
-            margin-bottom: 15px;
-        }
-
-        .slider-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .color-slider {
-            width: 100%;
-            height: 20px;
-            border-radius: 10px;
-            outline: none;
-            appearance: none;
-            cursor: pointer;
-            margin-bottom: 5px;
-        }
-
-        .color-slider::-webkit-slider-thumb {
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: white;
-            cursor: pointer;
-            border: 3px solid #333;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-
-        .slider-value {
-            display: flex;
-            justify-content: space-between;
-            font-family: monospace;
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* プレビューエリア */
         .color-preview-large {
             width: 100%;
             height: 80px;
             border-radius: 10px;
             margin-bottom: 15px;
-            border: 3px solid #ddd;
+            border: 3px solid #4a4a5e;
         }
 
         .color-values-display {
@@ -507,15 +426,17 @@
         }
 
         .value-item {
-            background: #f8f9fa;
+            background: #2a2a3e;
+            color: #e0e0e0;
             padding: 10px;
             border-radius: 8px;
             font-family: monospace;
             font-size: 12px;
+            border: 1px solid #3a3a4e;
         }
 
         .value-item strong {
-            color: #333;
+            color: #e0e0e0;
         }
 
         .picker-buttons {
@@ -543,35 +464,35 @@
         }
 
         .picker-btn.secondary {
-            background: #f8f9fa;
-            color: #333;
-            border: 2px solid #ddd;
+            background: #2a2a3e;
+            color: #e0e0e0;
+            border: 2px solid #3a3a4e;
         }
 
         .picker-btn.secondary:hover {
-            background: #e9ecef;
+            background: #3a3a4e;
         }
 
-        /* 逆算分析エリア */
         .reverse-analysis {
             margin-top: 30px;
             padding: 20px;
-            background: white;
+            background: #2a2a3e;
             border-radius: 15px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            border: 1px solid #3a3a4e;
         }
 
         .reverse-analysis h4 {
             text-align: center;
             margin-bottom: 15px;
-            color: #333;
+            color: #e0e0e0;
             font-size: 1.2em;
         }
 
         .analysis-tabs {
             display: flex;
             margin-bottom: 20px;
-            background: #f8f9fa;
+            background: #1e1e2e;
             border-radius: 10px;
             padding: 5px;
         }
@@ -585,6 +506,7 @@
             transition: all 0.3s ease;
             font-size: 14px;
             font-weight: 500;
+            color: #b0b0b0;
         }
 
         .analysis-tab.active {
@@ -601,7 +523,7 @@
             align-items: center;
             margin-bottom: 15px;
             padding: 15px;
-            background: #f8f9fa;
+            background: #1e1e2e;
             border-radius: 10px;
             border-left: 4px solid #4ecdc4;
         }
@@ -637,12 +559,12 @@
         .recipe-description {
             flex: 1;
             font-size: 14px;
-            color: #555;
+            color: #d0d0d0;
         }
 
         .recipe-accuracy {
-            background: #e3f2fd;
-            color: #1976d2;
+            background: #2a3d5e;
+            color: #64b5f6;
             padding: 4px 8px;
             border-radius: 5px;
             font-size: 12px;
@@ -651,7 +573,7 @@
 
         .no-results {
             text-align: center;
-            color: #666;
+            color: #b0b0b0;
             font-style: italic;
             padding: 40px 20px;
         }
@@ -733,7 +655,6 @@
                     <div class="color-value" id="hslValue" onclick="copyColor('hsl')">HSL(0, 0%, 50%)</div>
                 </div>
                 
-                <!-- 逆算機能 -->
                 <div class="reverse-analysis" id="reverseAnalysis">
                     <h4>🔍 この色の作り方</h4>
                     <div class="analysis-tabs">
@@ -761,62 +682,15 @@
             </div>
             
             <div class="picker-tabs">
-                <div class="picker-tab active" onclick="switchPickerTab('spectrum')">スペクトラム</div>
-                <div class="picker-tab" onclick="switchPickerTab('grid')">グリッド</div>
-                <div class="picker-tab" onclick="switchPickerTab('slider')">スライダー</div>
+                <div class="picker-tab active" onclick="switchPickerTab('grid')">グリッド</div>
             </div>
 
-            <!-- スペクトラムピッカー -->
-            <div class="picker-content active" id="spectrumPicker">
-                <div class="spectrum-picker" id="spectrumCanvas">
-                    <div class="spectrum-cursor" id="spectrumCursor"></div>
-                </div>
-            </div>
-
-            <!-- グリッドピッカー -->
-            <div class="picker-content" id="gridPicker">
+            <div class="picker-content active" id="gridPicker">
                 <div class="grid-picker" id="gridColors">
                     <!-- Grid colors will be generated by JavaScript -->
                 </div>
             </div>
 
-            <!-- スライダーピッカー -->
-            <div class="picker-content" id="sliderPicker">
-                <div class="slider-picker">
-                    <div class="slider-group">
-                        <label>レッド (R)</label>
-                        <input type="range" class="color-slider" id="redSlider" min="0" max="255" value="128" 
-                               style="background: linear-gradient(to right, #000, #f00);">
-                        <div class="slider-value">
-                            <span>0</span>
-                            <span id="redValue">128</span>
-                            <span>255</span>
-                        </div>
-                    </div>
-                    <div class="slider-group">
-                        <label>グリーン (G)</label>
-                        <input type="range" class="color-slider" id="greenSlider" min="0" max="255" value="128"
-                               style="background: linear-gradient(to right, #000, #0f0);">
-                        <div class="slider-value">
-                            <span>0</span>
-                            <span id="greenValue">128</span>
-                            <span>255</span>
-                        </div>
-                    </div>
-                    <div class="slider-group">
-                        <label>ブルー (B)</label>
-                        <input type="range" class="color-slider" id="blueSlider" min="0" max="255" value="128"
-                               style="background: linear-gradient(to right, #000, #00f);">
-                        <div class="slider-value">
-                            <span>0</span>
-                            <span id="blueValue">128</span>
-                            <span>255</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- プレビューエリア -->
             <div class="color-preview-large" id="pickerPreview"></div>
             
             <div class="color-values-display">
@@ -1039,7 +913,6 @@
             updatePickerDisplay();
             document.getElementById('colorPickerModal').style.display = 'flex';
             initializeGridPicker();
-            setupSliderEvents();
         }
 
         function closeColorPicker() {
@@ -1136,7 +1009,6 @@
             }, 2000);
         }
 
-        // カラーピッカー関連の関数
         function switchPickerTab(tabName) {
             // タブの切り替え
             document.querySelectorAll('.picker-tab').forEach(tab => tab.classList.remove('active'));
@@ -1144,10 +1016,6 @@
             
             event.target.classList.add('active');
             document.getElementById(tabName + 'Picker').classList.add('active');
-            
-            if (tabName === 'spectrum') {
-                initializeSpectrumPicker();
-            }
         }
 
         function updatePickerDisplay() {
@@ -1157,85 +1025,6 @@
             document.getElementById('pickerPreview').style.backgroundColor = hex;
             document.getElementById('pickerHex').textContent = hex;
             document.getElementById('pickerRgb').textContent = `${Math.round(currentPickerColor.r)}, ${Math.round(currentPickerColor.g)}, ${Math.round(currentPickerColor.b)}`;
-            
-            // スライダーを更新
-            document.getElementById('redSlider').value = currentPickerColor.r;
-            document.getElementById('greenSlider').value = currentPickerColor.g;
-            document.getElementById('blueSlider').value = currentPickerColor.b;
-            document.getElementById('redValue').textContent = Math.round(currentPickerColor.r);
-            document.getElementById('greenValue').textContent = Math.round(currentPickerColor.g);
-            document.getElementById('blueValue').textContent = Math.round(currentPickerColor.b);
-        }
-
-        function initializeSpectrumPicker() {
-            const spectrumCanvas = document.getElementById('spectrumCanvas');
-            const cursor = document.getElementById('spectrumCursor');
-            
-            let isDragging = false;
-            
-            function updateSpectrumColor(x, y) {
-                const rect = spectrumCanvas.getBoundingClientRect();
-                const relX = Math.max(0, Math.min(1, x / rect.width));
-                const relY = Math.max(0, Math.min(1, y / rect.height));
-                
-                // HSVからRGBに変換
-                const hue = relX * 360;
-                const saturation = 1 - relY;
-                const value = 1 - relY;
-                
-                const rgb = hsvToRgb(hue, saturation, value);
-                currentPickerColor = rgb;
-                updatePickerDisplay();
-                
-                // カーソル位置を更新
-                cursor.style.left = (relX * 100) + '%';
-                cursor.style.top = (relY * 100) + '%';
-            }
-            
-            spectrumCanvas.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                const rect = spectrumCanvas.getBoundingClientRect();
-                updateSpectrumColor(e.clientX - rect.left, e.clientY - rect.top);
-            });
-            
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                const rect = spectrumCanvas.getBoundingClientRect();
-                updateSpectrumColor(e.clientX - rect.left, e.clientY - rect.top);
-            });
-            
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
-        }
-
-        function hsvToRgb(h, s, v) {
-            h = h / 360;
-            const c = v * s;
-            const x = c * (1 - Math.abs((h * 6) % 2 - 1));
-            const m = v - c;
-            
-            let r, g, b;
-            
-            if (h < 1/6) {
-                r = c; g = x; b = 0;
-            } else if (h < 2/6) {
-                r = x; g = c; b = 0;
-            } else if (h < 3/6) {
-                r = 0; g = c; b = x;
-            } else if (h < 4/6) {
-                r = 0; g = x; b = c;
-            } else if (h < 5/6) {
-                r = x; g = 0; b = c;
-            } else {
-                r = c; g = 0; b = x;
-            }
-            
-            return {
-                r: Math.round((r + m) * 255),
-                g: Math.round((g + m) * 255),
-                b: Math.round((b + m) * 255)
-            };
         }
 
         function initializeGridPicker() {
@@ -1266,27 +1055,6 @@
                 };
                 gridContainer.appendChild(colorDiv);
             });
-        }
-
-        function setupSliderEvents() {
-            const redSlider = document.getElementById('redSlider');
-            const greenSlider = document.getElementById('greenSlider');
-            const blueSlider = document.getElementById('blueSlider');
-            
-            redSlider.oninput = () => {
-                currentPickerColor.r = parseInt(redSlider.value);
-                updatePickerDisplay();
-            };
-            
-            greenSlider.oninput = () => {
-                currentPickerColor.g = parseInt(greenSlider.value);
-                updatePickerDisplay();
-            };
-            
-            blueSlider.oninput = () => {
-                currentPickerColor.b = parseInt(blueSlider.value);
-                updatePickerDisplay();
-            };
         }
 
         function applyColor() {
@@ -1340,28 +1108,6 @@
                     }
                 }
                 
-                // 3色の組み合わせを試す（主要色のみ）
-                const primaryColors = ['赤', '緑', '青', '黄', 'シアン', 'マゼンタ'];
-                for (let i = 0; i < primaryColors.length; i++) {
-                    for (let j = i + 1; j < primaryColors.length; j++) {
-                        for (let k = j + 1; k < primaryColors.length; k++) {
-                            const recipe = findBestRatio3Colors(targetRgb, 
-                                baseColors[primaryColors[i]], 
-                                baseColors[primaryColors[j]], 
-                                baseColors[primaryColors[k]], mode);
-                            if (recipe.accuracy > 0.8) {
-                                recipes.push({
-                                    colors: [primaryColors[i], primaryColors[j], primaryColors[k]],
-                                    hexColors: [baseColors[primaryColors[i]], baseColors[primaryColors[j]], baseColors[primaryColors[k]]],
-                                    ratios: recipe.ratios,
-                                    accuracy: recipe.accuracy,
-                                    count: 3
-                                });
-                            }
-                        }
-                    }
-                }
-                
                 // 精度でソートして上位4つを返す
                 return recipes.sort((a, b) => b.accuracy - a.accuracy).slice(0, 4);
                 
@@ -1375,7 +1121,7 @@
             let bestAccuracy = 0;
             
             try {
-                // 10%刻みで比率を試す（軽量化）
+                // 10%刻みで比率を試す
                 for (let ratio1 = 10; ratio1 <= 90; ratio1 += 10) {
                     const ratio2 = 100 - ratio1;
                     const colors = [color1Hex, color2Hex];
@@ -1392,41 +1138,6 @@
                     if (accuracy > bestAccuracy) {
                         bestAccuracy = accuracy;
                         bestRatio = [ratio1, ratio2];
-                    }
-                }
-            } catch (error) {
-                // エラー時はデフォルト値を返す
-            }
-            
-            return { ratios: bestRatio, accuracy: bestAccuracy };
-        }
-
-        function findBestRatio3Colors(targetRgb, color1Hex, color2Hex, color3Hex, mode) {
-            let bestRatio = [33, 33, 34];
-            let bestAccuracy = 0;
-            
-            try {
-                // 20%刻みで比率を試す（さらに軽量化）
-                for (let ratio1 = 20; ratio1 <= 60; ratio1 += 20) {
-                    for (let ratio2 = 20; ratio2 <= 80 - ratio1; ratio2 += 20) {
-                        const ratio3 = 100 - ratio1 - ratio2;
-                        if (ratio3 < 20) continue;
-                        
-                        const colors = [color1Hex, color2Hex, color3Hex];
-                        const weights = [ratio1, ratio2, ratio3];
-                        
-                        let mixedRgb;
-                        if (mode === 'additive') {
-                            mixedRgb = additiveMix(colors, weights);
-                        } else {
-                            mixedRgb = subtractiveMix(colors, weights);
-                        }
-                        
-                        const accuracy = calculateColorAccuracy(targetRgb, mixedRgb);
-                        if (accuracy > bestAccuracy) {
-                            bestAccuracy = accuracy;
-                            bestRatio = [ratio1, ratio2, ratio3];
-                        }
                     }
                 }
             } catch (error) {
