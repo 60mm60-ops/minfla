@@ -1,345 +1,418 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 ミングルフラッシュ（Mingle Flash）</title>
+    <title>ミングルフラッシュ（Mingle Flash）</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ============================================================
+           pita-color トークン（共有CSS化する部分）
+           ============================================================ */
+        :root {
+            /* elevation: canvas(地) < surface(面) < hover(最前) */
+            --bg-canvas:  #eaeaec;
+            --bg-surface: #ffffff;
+            --bg-hover:   #e2e2e6;
+            --border-color: #d8d8dc;
+            --text-primary: #1c1c1f;
+            --text-muted:   #71717a;
+            --accent-color: #4ecdc4;
+            --accent-hover: #3db8b0;
+            --on-accent:    #0a0a0a;
+            --color-adopted:  #4ecdc4;
+            --color-pending:  #f1c40f;
+            --color-rejected: #e74c3c;
+            --overlay: rgba(0, 0, 0, 0.55);
+            --radius: 8px;
+            --radius-sm: 6px;
+            --t: 0.18s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-canvas:  #121212;
+            --bg-surface: #1c1c1f;
+            --bg-hover:   #262629;
+            --border-color: #333333;
+            --text-primary: #e0e0e0;
+            --text-muted:   #888888;
+            --accent-color: #4ecdc4;
+            --accent-hover: #67e8df;
+            --on-accent:    #0a0a0a;
+            --overlay: rgba(0, 0, 0, 0.72);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-canvas);
+            color: var(--text-primary);
+            transition: background-color var(--t), color var(--t);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
-            padding: 10px;
-            color: #e0e0e0;
+            padding: 16px;
+        }
+
+        /* フォーカスの可視化（共通） */
+        :focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                transition: none !important;
+                animation: none !important;
+            }
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background: #1e1e2e;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
             overflow: hidden;
-            border: 1px solid #2a2a3e;
+            transition: background-color var(--t), border-color var(--t);
         }
 
+        .app-title {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 1002;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 1.05rem;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            color: var(--accent-color);
+            pointer-events: none;
+            user-select: none;
+        }
+        .app-title .icon { width: 1em; height: 1em; }
+
+        /* ---------- ヘッダー ---------- */
         .header {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            color: white;
-            padding: 20px;
+            position: relative;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 16px;
             text-align: center;
+            transition: background-color var(--t), border-color var(--t);
         }
 
         .header h1 {
-            font-size: 2em;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 6px;
         }
 
         .header p {
-            opacity: 0.9;
-            font-size: 0.95em;
+            color: var(--text-muted);
+            font-size: 0.82rem;
             line-height: 1.4;
         }
 
-        .main-content {
-            padding: 20px;
-            background: #1e1e2e;
+        /* ---------- テーマトグル ---------- */
+        .theme-toggle {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background-color var(--t), color var(--t), border-color var(--t), transform 0.1s;
         }
 
-        .color-slots {
-            margin-bottom: 20px;
+        .theme-toggle:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-color);
         }
+
+        .theme-toggle:active { transform: scale(0.96); }
+
+        .main-content { padding: 16px; }
+
+        /* ---------- 色スロット ---------- */
+        .color-slots { margin-bottom: 16px; }
 
         .slot {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: #2a2a3e;
-            border-radius: 15px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            color: #e0e0e0;
+            margin-bottom: 12px;
+            padding: 14px;
+            background: var(--bg-canvas);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            transition: border-color var(--t), background-color var(--t);
             gap: 12px;
         }
 
-        .slot:hover {
-            border-color: #4ecdc4;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
+        .slot:hover { border-color: var(--accent-color); }
 
         .slot-header {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
             width: 100%;
             justify-content: center;
         }
 
         .color-preview {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: transform 0.15s ease;
             flex-shrink: 0;
         }
 
-        .color-preview:hover {
-            transform: scale(1.1);
-        }
+        .color-preview:hover { transform: scale(1.06); }
+        .color-preview:active { transform: scale(0.98); }
 
-        .color-input {
-            flex: 1;
-            max-width: 120px;
-        }
+        .color-input { flex: 1; max-width: 120px; }
 
         .color-input input {
-            padding: 10px 12px;
-            border: 2px solid #3a3a4e;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
             font-family: monospace;
-            font-size: 16px;
+            font-size: 0.9rem;
             width: 100%;
-            transition: border-color 0.3s ease;
-            background: #1e1e2e;
-            color: #e0e0e0;
+            transition: border-color var(--t), background-color var(--t), color var(--t);
+            background: var(--bg-surface);
+            color: var(--text-primary);
             text-align: center;
         }
 
         .color-input input:focus {
             outline: none;
-            border-color: #4ecdc4;
+            border-color: var(--accent-color);
         }
 
         .slot-controls {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
             width: 100%;
             justify-content: space-between;
         }
 
-        .ratio-control {
-            flex: 1;
-            min-width: 0;
-        }
+        .ratio-control { flex: 1; min-width: 0; }
 
         .ratio-control label {
             display: block;
-            font-size: 13px;
-            color: #b0b0b0;
+            font-size: 0.75rem;
+            color: var(--text-muted);
             margin-bottom: 8px;
             text-align: center;
         }
 
         .ratio-slider {
             width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: #3a3a4e;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border-color);
             outline: none;
             appearance: none;
+            -webkit-appearance: none;
             cursor: pointer;
+            transition: background-color var(--t);
         }
 
         .ratio-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
             appearance: none;
-            width: 24px;
-            height: 24px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #4ecdc4;
+            background: var(--accent-color);
             cursor: pointer;
-            border: 3px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .ratio-slider::-webkit-slider-thumb:active { transform: scale(1.2); }
+
+        .ratio-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
         }
 
         .ratio-value {
             display: block;
             text-align: center;
-            font-weight: bold;
-            color: #e0e0e0;
+            font-weight: 600;
+            color: var(--text-primary);
             margin-top: 5px;
-            font-size: 14px;
+            font-size: 0.82rem;
         }
 
+        /* ---------- ボタン ---------- */
         .delete-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 8px;
+            background: transparent;
+            color: var(--color-rejected);
+            border: 1px solid var(--color-rejected);
+            padding: 10px 14px;
+            border-radius: var(--radius);
             cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
+            font-size: 0.8rem;
             font-weight: 500;
+            flex-shrink: 0;
+            font-family: inherit;
+            transition: background-color var(--t), color var(--t), transform 0.1s;
         }
 
-        .delete-btn:hover {
-            background: #ff5252;
-            transform: scale(1.05);
-        }
+        .delete-btn:hover { background: var(--color-rejected); color: #fff; }
+        .delete-btn:active { transform: scale(0.97); }
 
         .add-slot-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 18px;
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            color: white;
+            padding: 12px;
+            background: var(--accent-color);
+            color: var(--on-accent);
             border: none;
-            border-radius: 15px;
-            font-size: 16px;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 25px;
+            transition: background-color var(--t), transform 0.1s;
+            margin-bottom: 20px;
+            font-family: inherit;
         }
 
-        .add-slot-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+        .add-slot-btn:hover:not(:disabled) { background: var(--accent-hover); }
+        .add-slot-btn:active:not(:disabled) { transform: scale(0.98); }
 
         .add-slot-btn:disabled {
-            background: #555;
+            background: var(--bg-hover);
+            color: var(--text-muted);
             cursor: not-allowed;
-            transform: none;
         }
 
-        .mixing-mode {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+        /* ---------- 混色モード ---------- */
+        .mixing-mode { text-align: center; margin-bottom: 20px; }
 
         .mixing-mode h3 {
-            margin-bottom: 15px;
-            color: #e0e0e0;
-            font-size: 1.1em;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
         }
 
         .mode-toggle {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            background: #2a2a3e;
-            border-radius: 15px;
-            padding: 8px;
+            gap: 6px;
+            background: var(--bg-canvas);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 6px;
+            transition: background-color var(--t), border-color var(--t);
         }
 
         .mode-option {
-            padding: 12px 20px;
-            border-radius: 12px;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color var(--t), color var(--t);
             font-weight: 500;
-            position: relative;
-            z-index: 2;
-            color: #b0b0b0;
+            color: var(--text-muted);
             text-align: center;
-            font-size: 14px;
+            font-size: 0.82rem;
         }
 
-        .mode-option.active {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            color: white;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
+        .mode-option.active { background: var(--accent-color); color: var(--on-accent); }
+        .mode-option:hover:not(.active) { background: var(--bg-hover); color: var(--text-primary); }
 
+        /* ---------- 結果プレビュー ---------- */
         .result-preview {
             text-align: center;
-            padding: 25px;
-            background: #2a2a3e;
-            border-radius: 15px;
-            margin-bottom: 20px;
+            padding: 20px;
+            background: var(--bg-canvas);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            transition: background-color var(--t), border-color var(--t);
         }
 
         .result-color {
-            width: 160px;
-            height: 160px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             margin: 0 auto 20px;
-            border: 6px solid white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
         }
 
-        .result-color:hover {
-            transform: scale(1.05);
-        }
+        .result-color:hover { transform: scale(1.04); }
+        .result-color:active { transform: scale(0.99); }
 
-        .result-info {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .result-info { display: flex; flex-direction: column; gap: 8px; }
 
         .color-value {
-            background: #3a3a4e;
-            color: #e0e0e0;
-            padding: 12px 15px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color var(--t), border-color var(--t);
             font-family: monospace;
-            font-weight: bold;
-            border: 1px solid #4a4a5e;
-            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
         }
 
-        .color-value:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+        .color-value:hover { background: var(--bg-hover); border-color: var(--accent-color); }
 
+        /* ---------- 通知 ---------- */
         .copy-notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            left: 20px;
-            background: #4ecdc4;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transform: translateY(-100px);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-color);
+            color: var(--on-accent);
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            z-index: 2000;
+            transition: bottom 0.3s ease-out;
             text-align: center;
-            font-weight: 500;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
-        .copy-notification.show {
-            transform: translateY(0);
-            opacity: 1;
-            visibility: visible;
-        }
+        .copy-notification.show { bottom: 24px; }
 
-        /* カスタムカラーピッカーモーダル */
+        /* ---------- カラーピッカーモーダル ---------- */
         .color-picker-modal {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            inset: 0;
+            background: var(--overlay);
             display: none;
             justify-content: center;
             align-items: flex-start;
@@ -349,14 +422,14 @@
         }
 
         .color-picker-content {
-            background: #1e1e2e;
-            border-radius: 20px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
             padding: 20px;
             width: 100%;
             max-width: 400px;
             max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid #3a3a4e;
             margin: auto;
         }
 
@@ -369,63 +442,53 @@
 
         .color-picker-header h3 {
             margin: 0;
-            color: #e0e0e0;
-            font-size: 1.2em;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            font-weight: 600;
         }
 
         .close-btn {
             background: none;
             border: none;
-            font-size: 28px;
+            font-size: 26px;
             cursor: pointer;
-            color: #b0b0b0;
-            padding: 5px;
-            border-radius: 50%;
-            transition: background-color 0.3s ease;
-            width: 40px;
-            height: 40px;
+            color: var(--text-muted);
+            border-radius: var(--radius-sm);
+            transition: background-color var(--t), color var(--t);
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .close-btn:hover {
-            background: #3a3a4e;
-            color: #e0e0e0;
-        }
+        .close-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
 
         .picker-tabs {
             display: flex;
             margin-bottom: 20px;
-            background: #2a2a3e;
-            border-radius: 10px;
+            background: var(--bg-canvas);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
             padding: 5px;
         }
 
         .picker-tab {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            color: #b0b0b0;
+            border-radius: var(--radius-sm);
+            transition: background-color var(--t), color var(--t);
+            font-size: 0.82rem;
+            color: var(--text-muted);
             font-weight: 500;
         }
 
-        .picker-tab.active {
-            background: #4ecdc4;
-            color: white;
-        }
+        .picker-tab.active { background: var(--accent-color); color: var(--on-accent); }
 
-        .picker-content {
-            display: none;
-        }
-
-        .picker-content.active {
-            display: block;
-        }
+        .picker-content { display: none; }
+        .picker-content.active { display: block; }
 
         .grid-picker {
             display: grid;
@@ -437,28 +500,21 @@
         .grid-color {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .grid-color:hover {
-            border-color: #4ecdc4;
-            transform: scale(1.1);
-        }
-
-        .grid-color.selected {
-            border-color: #4ecdc4;
-            box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
-        }
+        .grid-color:hover { transform: scale(1.08); }
+        .grid-color.selected { box-shadow: 0 0 0 2px var(--accent-color); }
 
         .color-preview-large {
             width: 100%;
-            height: 80px;
-            border-radius: 10px;
+            height: 72px;
+            border-radius: var(--radius-sm);
             margin-bottom: 15px;
-            border: 3px solid #4a4a5e;
+            border: 1px solid var(--border-color);
         }
 
         .color-values-display {
@@ -469,128 +525,106 @@
         }
 
         .value-item {
-            background: #2a2a3e;
-            color: #e0e0e0;
+            background: var(--bg-canvas);
+            color: var(--text-primary);
             padding: 12px;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             font-family: monospace;
-            font-size: 12px;
-            border: 1px solid #3a3a4e;
+            font-size: 0.75rem;
+            border: 1px solid var(--border-color);
         }
 
-        .value-item strong {
-            color: #e0e0e0;
-        }
+        .value-item strong { color: var(--text-muted); font-weight: 500; }
 
-        .picker-buttons {
-            display: flex;
-            gap: 10px;
-        }
+        .picker-buttons { display: flex; gap: 10px; }
 
         .picker-btn {
             flex: 1;
-            padding: 14px;
+            padding: 12px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius);
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            font-size: 16px;
+            font-weight: 600;
+            transition: background-color var(--t), transform 0.1s;
+            font-size: 0.9rem;
+            font-family: inherit;
         }
 
-        .picker-btn.primary {
-            background: #4ecdc4;
-            color: white;
-        }
-
-        .picker-btn.primary:hover {
-            background: #44a08d;
-        }
+        .picker-btn:active { transform: scale(0.98); }
+        .picker-btn.primary { background: var(--accent-color); color: var(--on-accent); }
+        .picker-btn.primary:hover { background: var(--accent-hover); }
 
         .picker-btn.secondary {
-            background: #2a2a3e;
-            color: #e0e0e0;
-            border: 2px solid #3a3a4e;
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
 
-        .picker-btn.secondary:hover {
-            background: #3a3a4e;
-        }
+        .picker-btn.secondary:hover { background: var(--border-color); }
 
+        /* ---------- 逆算分析 ---------- */
         .reverse-analysis {
-            margin-top: 25px;
-            padding: 20px;
-            background: #2a2a3e;
-            border-radius: 15px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-            border: 1px solid #3a3a4e;
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            transition: background-color var(--t), border-color var(--t);
         }
 
         .reverse-analysis h4 {
             text-align: center;
-            margin-bottom: 15px;
-            color: #e0e0e0;
-            font-size: 1.1em;
+            margin-bottom: 14px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
         }
 
         .analysis-tabs {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-            background: #1e1e2e;
-            border-radius: 10px;
-            padding: 8px;
+            gap: 6px;
+            margin-bottom: 16px;
+            background: var(--bg-canvas);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 6px;
         }
 
         .analysis-tab {
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 13px;
+            border-radius: var(--radius-sm);
+            transition: background-color var(--t), color var(--t);
+            font-size: 0.78rem;
             font-weight: 500;
-            color: #b0b0b0;
+            color: var(--text-muted);
         }
 
-        .analysis-tab.active {
-            background: #4ecdc4;
-            color: white;
-        }
+        .analysis-tab.active { background: var(--accent-color); color: var(--on-accent); }
 
-        .analysis-content {
-            min-height: 120px;
-        }
+        .analysis-content { min-height: 120px; }
 
         .recipe-item {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: #1e1e2e;
-            border-radius: 10px;
-            border-left: 4px solid #4ecdc4;
+            margin-bottom: 12px;
+            padding: 14px;
+            background: var(--bg-canvas);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
         }
 
-        .recipe-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .recipe-colors {
-            display: flex;
-            gap: 8px;
-        }
+        .recipe-header { display: flex; align-items: center; gap: 12px; }
+        .recipe-colors { display: flex; gap: 8px; }
 
         .recipe-color-chip {
-            width: 35px;
-            height: 35px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
             position: relative;
         }
 
@@ -599,8 +633,8 @@
             bottom: -8px;
             left: 50%;
             transform: translateX(-50%);
-            background: #333;
-            color: white;
+            background: var(--bg-hover);
+            color: var(--text-primary);
             font-size: 9px;
             padding: 2px 4px;
             border-radius: 3px;
@@ -609,181 +643,75 @@
 
         .recipe-description {
             flex: 1;
-            font-size: 14px;
-            color: #d0d0d0;
+            font-size: 0.85rem;
+            color: var(--text-primary);
             line-height: 1.4;
         }
 
         .recipe-accuracy {
-            background: #2a3d5e;
-            color: #64b5f6;
+            background: var(--bg-hover);
+            color: var(--accent-color);
             padding: 6px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
             align-self: flex-start;
         }
 
         .no-results {
             text-align: center;
-            color: #b0b0b0;
+            color: var(--text-muted);
             font-style: italic;
             padding: 30px 20px;
-            font-size: 14px;
+            font-size: 0.85rem;
         }
 
-        /* タッチ向けの調整 */
+        /* ---------- スクロールバー ---------- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-canvas); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
         @media (hover: none) {
-            .slot:hover {
-                transform: none;
-            }
-            
-            .color-preview:hover {
-                transform: none;
-            }
-            
-            .result-color:hover {
-                transform: none;
-            }
-            
-            .color-value:hover {
-                transform: none;
-            }
+            .slot:hover, .color-preview:hover, .result-color:hover, .color-value:hover { transform: none; }
         }
 
-        /* 極小画面への対応 */
         @media (max-width: 360px) {
-            body {
-                padding: 5px;
-            }
-            
-            .header {
-                padding: 15px;
-            }
-            
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .header p {
-                font-size: 0.9em;
-            }
-            
-            .main-content {
-                padding: 15px;
-            }
-            
-            .color-preview {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .result-color {
-                width: 140px;
-                height: 140px;
-            }
-            
-            .grid-picker {
-                grid-template-columns: repeat(5, 1fr);
-            }
+            body { padding: 8px; }
+            .header { padding: 16px; }
+            .header h1 { font-size: 1.25rem; }
+            .main-content { padding: 14px; }
+            .color-preview { width: 48px; height: 48px; }
+            .result-color { width: 120px; height: 120px; }
+            .grid-picker { grid-template-columns: repeat(5, 1fr); }
         }
 
-        /* 横向きスマホ対応 */
-        @media (max-width: 768px) and (orientation: landscape) {
-            .mode-toggle {
-                flex-direction: row;
-            }
-            
-            .analysis-tabs {
-                flex-direction: row;
-            }
-            
-            .result-info {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            
-            .color-value {
-                flex: 1;
-                min-width: calc(50% - 5px);
-            }
-        }
-
-        /* タブレット向け調整 */
         @media (min-width: 768px) {
-            body {
-                padding: 20px;
-            }
-            
-            .slot {
-                flex-direction: row;
-                align-items: center;
-                gap: 15px;
-            }
-            
-            .slot-header {
-                width: auto;
-                flex: 0 0 auto;
-            }
-            
-            .slot-controls {
-                flex: 1;
-                width: auto;
-            }
-            
-            .ratio-control {
-                flex: 1;
-            }
-            
-            .ratio-control label {
-                text-align: left;
-            }
-            
-            .ratio-value {
-                text-align: right;
-            }
-            
-            .mode-toggle {
-                flex-direction: row;
-                display: inline-flex;
-            }
-            
-            .analysis-tabs {
-                flex-direction: row;
-            }
-            
-            .result-info {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            
-            .color-value {
-                flex: 1;
-                min-width: calc(33.333% - 7px);
-            }
-            
-            .recipe-item {
-                flex-direction: row;
-                align-items: center;
-            }
-            
-            .recipe-header {
-                width: auto;
-            }
+            .slot { flex-direction: row; align-items: center; gap: 14px; }
+            .slot-header { width: auto; flex: 0 0 auto; }
+            .slot-controls { flex: 1; width: auto; }
+            .ratio-control { flex: 1; }
+            .ratio-control label { text-align: left; }
+            .ratio-value { text-align: right; }
+            .mode-toggle { flex-direction: row; }
+            .analysis-tabs { flex-direction: row; }
+            .result-info { flex-direction: row; flex-wrap: wrap; }
+            .color-value { flex: 1; min-width: calc(33.333% - 6px); }
+            .recipe-item { flex-direction: row; align-items: center; }
         }
     </style>
 </head>
 <body>
+    <div class="app-title"><span id="appTitleIcon"></span>MINfla</div>
     <div class="container">
         <div class="header">
-            <h1>🎨 ミングルフラッシュ</h1>
-            <p>色を混ぜてみよう！加法混色と減法混色をリアルタイムでシミュレート</p>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="themeIcon"></span><span id="themeLabel">ライト</span>
+            </button>
+            <p>色を混ぜてみよう。加法混色と減法混色をリアルタイムでシミュレート</p>
         </div>
 
         <div class="main-content">
-            <div class="color-slots" id="colorSlots">
-                <!-- Color slots will be generated by JavaScript -->
-            </div>
+            <div class="color-slots" id="colorSlots"></div>
 
             <button class="add-slot-btn" id="addSlotBtn" onclick="addColorSlot()">
                 ＋ 色を追加
@@ -793,10 +721,10 @@
                 <h3>混色モード</h3>
                 <div class="mode-toggle">
                     <div class="mode-option active" onclick="setMixingMode('additive')">
-                        🔆 加法混色（光の混色）
+                        加法混色（光の混色）
                     </div>
                     <div class="mode-option" onclick="setMixingMode('subtractive')">
-                        🎨 減法混色（絵の具の混色）
+                        減法混色（絵の具の混色）
                     </div>
                 </div>
             </div>
@@ -808,52 +736,43 @@
                     <div class="color-value" id="rgbValue" onclick="copyColor('rgb')">RGB(128, 128, 128)</div>
                     <div class="color-value" id="hslValue" onclick="copyColor('hsl')">HSL(0, 0%, 50%)</div>
                 </div>
-                
+
                 <div class="reverse-analysis" id="reverseAnalysis">
-                    <h4>🔍 この色の作り方</h4>
+                    <h4>この色の作り方</h4>
                     <div class="analysis-tabs">
                         <div class="analysis-tab active" onclick="switchAnalysisMode('additive', event)">
-                            🔆 加法混色での作り方
+                            加法混色での作り方
                         </div>
                         <div class="analysis-tab" onclick="switchAnalysisMode('subtractive', event)">
-                            🎨 減法混色での作り方
+                            減法混色での作り方
                         </div>
                     </div>
-                    <div class="analysis-content" id="analysisContent">
-                        <!-- 分析結果がここに表示される -->
-                    </div>
+                    <div class="analysis-content" id="analysisContent"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- カラーピッカーモーダル -->
     <div class="color-picker-modal" id="colorPickerModal">
         <div class="color-picker-content">
             <div class="color-picker-header">
                 <h3>色を選択</h3>
                 <button class="close-btn" onclick="closeColorPicker()">&times;</button>
             </div>
-            
+
             <div class="picker-tabs">
                 <div class="picker-tab active" onclick="switchPickerTab('grid')">グリッド</div>
             </div>
 
             <div class="picker-content active" id="gridPicker">
-                <div class="grid-picker" id="gridColors">
-                    <!-- Grid colors will be generated by JavaScript -->
-                </div>
+                <div class="grid-picker" id="gridColors"></div>
             </div>
 
             <div class="color-preview-large" id="pickerPreview"></div>
-            
+
             <div class="color-values-display">
-                <div class="value-item">
-                    <strong>HEX:</strong> <span id="pickerHex">#808080</span>
-                </div>
-                <div class="value-item">
-                    <strong>RGB:</strong> <span id="pickerRgb">128, 128, 128</span>
-                </div>
+                <div class="value-item"><strong>HEX:</strong> <span id="pickerHex">#808080</span></div>
+                <div class="value-item"><strong>RGB:</strong> <span id="pickerRgb">128, 128, 128</span></div>
             </div>
 
             <div class="picker-buttons">
@@ -864,10 +783,39 @@
     </div>
 
     <div class="copy-notification" id="copyNotification">
-        クリップボードにコピーしました！
+        クリップボードにコピーしました
     </div>
 
     <script>
+        // ============================================================
+        // テーマ切替（共有CSS化する部分。localStorage キーは6ツール共通）
+        // ============================================================
+        const svgIcon = (p) => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+        const ICONS = {
+            sun: svgIcon('<circle cx="12" cy="12" r="4"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'),
+            moon: svgIcon('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'),
+            logo: svgIcon('<circle cx="13.5" cy="6.5" r=".9" fill="currentColor" stroke="none"/><circle cx="17.5" cy="10.5" r=".9" fill="currentColor" stroke="none"/><circle cx="8.5" cy="7.5" r=".9" fill="currentColor" stroke="none"/><circle cx="6.5" cy="12.5" r=".9" fill="currentColor" stroke="none"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>')
+        };
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('pita-theme', theme);
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
+            if (icon)  icon.innerHTML = theme === 'dark' ? ICONS.moon : ICONS.sun;
+            if (label) label.textContent = theme === 'dark' ? 'ダーク' : 'ライト';
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+
+        (function initTheme() {
+            const saved = localStorage.getItem('pita-theme') || 'light';
+            applyTheme(saved);
+        })();
+
+        // ============================================================
         let colorSlots = [];
         let mixingMode = 'additive';
         let nextSlotId = 1;
@@ -875,27 +823,13 @@
         let currentPickerColor = { r: 128, g: 128, b: 128 };
         let currentAnalysisMode = 'additive';
 
-        // 基本色パレット（逆算用）
         const baseColors = {
-            '赤': '#FF0000',
-            '緑': '#00FF00', 
-            '青': '#0000FF',
-            '黄': '#FFFF00',
-            'シアン': '#00FFFF',
-            'マゼンタ': '#FF00FF',
-            '白': '#FFFFFF',
-            '黒': '#000000',
-            'オレンジ': '#FF8000',
-            'ライム': '#80FF00',
-            '紫': '#8000FF',
-            'ピンク': '#FF0080',
-            '茶色': '#804020',
-            'ネイビー': '#000080',
-            'ダークグリーン': '#008000',
-            'グレー': '#808080'
+            '赤': '#FF0000', '緑': '#00FF00', '青': '#0000FF', '黄': '#FFFF00',
+            'シアン': '#00FFFF', 'マゼンタ': '#FF00FF', '白': '#FFFFFF', '黒': '#000000',
+            'オレンジ': '#FF8000', 'ライム': '#80FF00', '紫': '#8000FF', 'ピンク': '#FF0080',
+            '茶色': '#804020', 'ネイビー': '#000080', 'ダークグリーン': '#008000', 'グレー': '#808080'
         };
 
-        // 色変換ユーティリティ関数
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
@@ -910,16 +844,11 @@
         }
 
         function rgbToHsl(r, g, b) {
-            r /= 255;
-            g /= 255;
-            b /= 255;
-            const max = Math.max(r, g, b);
-            const min = Math.min(r, g, b);
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
             let h, s, l = (max + min) / 2;
-
-            if (max === min) {
-                h = s = 0;
-            } else {
+            if (max === min) { h = s = 0; }
+            else {
                 const d = max - min;
                 s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
                 switch (max) {
@@ -929,70 +858,45 @@
                 }
                 h /= 6;
             }
-
-            return {
-                h: Math.round(h * 360),
-                s: Math.round(s * 100),
-                l: Math.round(l * 100)
-            };
+            return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
         }
 
         function rgbToCmy(r, g, b) {
-            const c = 1 - (r / 255);
-            const m = 1 - (g / 255);
-            const y = 1 - (b / 255);
-            return { c, m, y };
+            return { c: 1 - (r / 255), m: 1 - (g / 255), y: 1 - (b / 255) };
         }
 
         function cmyToRgb(c, m, y) {
-            const r = (1 - c) * 255;
-            const g = (1 - m) * 255;
-            const b = (1 - y) * 255;
-            return { r, g, b };
+            return { r: (1 - c) * 255, g: (1 - m) * 255, b: (1 - y) * 255 };
         }
 
-        // 混色ロジック
         function additiveMix(colors, weights) {
             let totalWeight = weights.reduce((sum, w) => sum + w, 0);
             if (totalWeight === 0) return { r: 128, g: 128, b: 128 };
-
             let r = 0, g = 0, b = 0;
             colors.forEach((color, i) => {
                 const rgb = hexToRgb(color);
                 const weight = weights[i] / totalWeight;
-                r += rgb.r * weight;
-                g += rgb.g * weight;
-                b += rgb.b * weight;
+                r += rgb.r * weight; g += rgb.g * weight; b += rgb.b * weight;
             });
-
             return { r: Math.min(255, r), g: Math.min(255, g), b: Math.min(255, b) };
         }
 
         function subtractiveMix(colors, weights) {
             let totalWeight = weights.reduce((sum, w) => sum + w, 0);
             if (totalWeight === 0) return { r: 128, g: 128, b: 128 };
-
             let c = 0, m = 0, y = 0;
             colors.forEach((color, i) => {
                 const rgb = hexToRgb(color);
                 const cmy = rgbToCmy(rgb.r, rgb.g, rgb.b);
                 const weight = weights[i] / totalWeight;
-                c += cmy.c * weight;
-                m += cmy.m * weight;
-                y += cmy.y * weight;
+                c += cmy.c * weight; m += cmy.m * weight; y += cmy.y * weight;
             });
-
             return cmyToRgb(c, m, y);
         }
 
-        // UI 関数
         function createColorSlot() {
             const slotId = nextSlotId++;
-            const slot = {
-                id: slotId,
-                color: generateRandomColor(),
-                ratio: 100
-            };
+            const slot = { id: slotId, color: generateRandomColor(), ratio: 100 };
             colorSlots.push(slot);
             return slot;
         }
@@ -1003,7 +907,6 @@
 
         function addColorSlot() {
             if (colorSlots.length >= 4) return;
-            
             createColorSlot();
             updateSlotRatios();
             renderColorSlots();
@@ -1021,11 +924,8 @@
 
         function updateSlotRatios() {
             if (colorSlots.length === 0) return;
-            
             const equalRatio = 100 / colorSlots.length;
-            colorSlots.forEach(slot => {
-                slot.ratio = equalRatio;
-            });
+            colorSlots.forEach(slot => { slot.ratio = equalRatio; });
         }
 
         function updateAddButton() {
@@ -1037,7 +937,6 @@
         function renderColorSlots() {
             const container = document.getElementById('colorSlots');
             container.innerHTML = '';
-
             colorSlots.forEach(slot => {
                 const slotElement = document.createElement('div');
                 slotElement.className = 'slot';
@@ -1051,7 +950,7 @@
                     <div class="slot-controls">
                         <div class="ratio-control">
                             <label>比率</label>
-                            <input type="range" class="ratio-slider" min="1" max="100" value="${slot.ratio}" 
+                            <input type="range" class="ratio-slider" min="1" max="100" value="${slot.ratio}"
                                    onchange="updateRatio(${slot.id}, this.value)">
                             <span class="ratio-value">${Math.round(slot.ratio)}%</span>
                         </div>
@@ -1066,7 +965,6 @@
             currentEditingSlotId = slotId;
             const slot = colorSlots.find(s => s.id === slotId);
             if (!slot) return;
-
             currentPickerColor = hexToRgb(slot.color);
             updatePickerDisplay();
             document.getElementById('colorPickerModal').style.display = 'flex';
@@ -1081,13 +979,10 @@
         function updateColor(slotId, color) {
             const slot = colorSlots.find(s => s.id === slotId);
             if (!slot) return;
-
-            // HEX形式の検証
             if (!/^#[0-9A-F]{6}$/i.test(color)) {
                 if (!/^#/.test(color)) color = '#' + color;
                 if (!/^#[0-9A-F]{6}$/i.test(color)) return;
             }
-
             slot.color = color.toUpperCase();
             renderColorSlots();
             updateMixedColor();
@@ -1096,7 +991,6 @@
         function updateRatio(slotId, ratio) {
             const slot = colorSlots.find(s => s.id === slotId);
             if (!slot) return;
-
             slot.ratio = parseFloat(ratio);
             renderColorSlots();
             updateMixedColor();
@@ -1104,82 +998,55 @@
 
         function setMixingMode(mode) {
             mixingMode = mode;
-            document.querySelectorAll('.mode-option').forEach(option => {
-                option.classList.remove('active');
-            });
+            document.querySelectorAll('.mode-option').forEach(option => option.classList.remove('active'));
             event.target.classList.add('active');
             updateMixedColor();
         }
 
         function updateMixedColor() {
             if (colorSlots.length === 0) {
-                const defaultColor = { r: 128, g: 128, b: 128 };
-                displayResult(defaultColor);
+                displayResult({ r: 128, g: 128, b: 128 });
                 return;
             }
-
             const colors = colorSlots.map(slot => slot.color);
             const weights = colorSlots.map(slot => slot.ratio);
-
-            let result;
-            if (mixingMode === 'additive') {
-                result = additiveMix(colors, weights);
-            } else {
-                result = subtractiveMix(colors, weights);
-            }
-
+            let result = mixingMode === 'additive' ? additiveMix(colors, weights) : subtractiveMix(colors, weights);
             displayResult(result);
         }
 
         function displayResult(rgb) {
             const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
             const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-
             document.getElementById('resultColor').style.backgroundColor = hex;
             document.getElementById('hexValue').textContent = hex;
             document.getElementById('rgbValue').textContent = `RGB(${Math.round(rgb.r)}, ${Math.round(rgb.g)}, ${Math.round(rgb.b)})`;
             document.getElementById('hslValue').textContent = `HSL(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
-            
-            // 逆算分析を実行
             performReverseAnalysis(hex);
         }
 
         function copyColor(format) {
             let textToCopy;
-            if (format === 'hex') {
-                textToCopy = document.getElementById('hexValue').textContent;
-            } else if (format === 'rgb') {
-                textToCopy = document.getElementById('rgbValue').textContent;
-            } else if (format === 'hsl') {
-                textToCopy = document.getElementById('hslValue').textContent;
-            }
-
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showCopyNotification();
-            });
+            if (format === 'hex') textToCopy = document.getElementById('hexValue').textContent;
+            else if (format === 'rgb') textToCopy = document.getElementById('rgbValue').textContent;
+            else if (format === 'hsl') textToCopy = document.getElementById('hslValue').textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => showCopyNotification());
         }
 
         function showCopyNotification() {
             const notification = document.getElementById('copyNotification');
             notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2000);
+            setTimeout(() => notification.classList.remove('show'), 2000);
         }
 
         function switchPickerTab(tabName) {
-            // タブの切り替え
             document.querySelectorAll('.picker-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.picker-content').forEach(content => content.classList.remove('active'));
-            
             event.target.classList.add('active');
             document.getElementById(tabName + 'Picker').classList.add('active');
         }
 
         function updatePickerDisplay() {
             const hex = rgbToHex(currentPickerColor.r, currentPickerColor.g, currentPickerColor.b);
-            
-            // プレビューを更新
             document.getElementById('pickerPreview').style.backgroundColor = hex;
             document.getElementById('pickerHex').textContent = hex;
             document.getElementById('pickerRgb').textContent = `${Math.round(currentPickerColor.r)}, ${Math.round(currentPickerColor.g)}, ${Math.round(currentPickerColor.b)}`;
@@ -1188,20 +1055,17 @@
         function initializeGridPicker() {
             const gridContainer = document.getElementById('gridColors');
             gridContainer.innerHTML = '';
-            
-            // 基本色のパレット
             const basicColors = [
-                '#FF0000', '#FF8000', '#FFFF00', '#80FF00', '#00FF00', '#00FF80', 
+                '#FF0000', '#FF8000', '#FFFF00', '#80FF00', '#00FF00', '#00FF80',
                 '#00FFFF', '#0080FF', '#0000FF', '#8000FF', '#FF00FF', '#FF0080',
-                '#800000', '#804000', '#808000', '#408000', '#008000', '#008040', 
+                '#800000', '#804000', '#808000', '#408000', '#008000', '#008040',
                 '#008080', '#004080', '#000080', '#400080', '#800080', '#800040',
-                '#400000', '#402000', '#404000', '#204000', '#004000', '#002020', 
+                '#400000', '#402000', '#404000', '#204000', '#004000', '#002020',
                 '#004040', '#002040', '#000040', '#200040', '#400040', '#400020',
-                '#FFFFFF', '#E0E0E0', '#C0C0C0', '#A0A0A0', '#808080', '#606060', 
+                '#FFFFFF', '#E0E0E0', '#C0C0C0', '#A0A0A0', '#808080', '#606060',
                 '#404040', '#202020', '#000000', '#FFE0E0', '#E0FFE0', '#E0E0FF',
                 '#FFFFE0', '#FFE0FF', '#E0FFFF', '#F0F0F0', '#FFF0F0', '#F0FFF0'
             ];
-            
             basicColors.forEach(color => {
                 const colorDiv = document.createElement('div');
                 colorDiv.className = 'grid-color';
@@ -1209,7 +1073,6 @@
                 colorDiv.onclick = () => {
                     currentPickerColor = hexToRgb(color);
                     updatePickerDisplay();
-                    // 選択状態を更新
                     document.querySelectorAll('.grid-color').forEach(c => c.classList.remove('selected'));
                     colorDiv.classList.add('selected');
                 };
@@ -1229,18 +1092,10 @@
             closeColorPicker();
         }
 
-        // 逆算分析機能
         function performReverseAnalysis(targetHex) {
             try {
                 const targetRgb = hexToRgb(targetHex);
-                
-                let recipes;
-                if (currentAnalysisMode === 'additive') {
-                    recipes = findColorRecipes(targetRgb, 'additive');
-                } else {
-                    recipes = findColorRecipes(targetRgb, 'subtractive');
-                }
-                
+                const recipes = findColorRecipes(targetRgb, currentAnalysisMode);
                 displayAnalysisResults(recipes);
             } catch (error) {
                 document.getElementById('analysisContent').innerHTML = '<div class="no-results">分析中にエラーが発生しました</div>';
@@ -1250,9 +1105,7 @@
         function findColorRecipes(targetRgb, mode) {
             const recipes = [];
             const baseColorNames = Object.keys(baseColors);
-            
             try {
-                // 2色の組み合わせを試す
                 for (let i = 0; i < baseColorNames.length; i++) {
                     for (let j = i + 1; j < baseColorNames.length; j++) {
                         const recipe = findBestRatio2Colors(targetRgb, baseColors[baseColorNames[i]], baseColors[baseColorNames[j]], mode);
@@ -1267,10 +1120,7 @@
                         }
                     }
                 }
-                
-                // 精度でソートして上位4つを返す
                 return recipes.sort((a, b) => b.accuracy - a.accuracy).slice(0, 4);
-                
             } catch (error) {
                 return [];
             }
@@ -1279,31 +1129,19 @@
         function findBestRatio2Colors(targetRgb, color1Hex, color2Hex, mode) {
             let bestRatio = [50, 50];
             let bestAccuracy = 0;
-            
             try {
-                // 10%刻みで比率を試す
                 for (let ratio1 = 10; ratio1 <= 90; ratio1 += 10) {
                     const ratio2 = 100 - ratio1;
                     const colors = [color1Hex, color2Hex];
                     const weights = [ratio1, ratio2];
-                    
-                    let mixedRgb;
-                    if (mode === 'additive') {
-                        mixedRgb = additiveMix(colors, weights);
-                    } else {
-                        mixedRgb = subtractiveMix(colors, weights);
-                    }
-                    
+                    let mixedRgb = mode === 'additive' ? additiveMix(colors, weights) : subtractiveMix(colors, weights);
                     const accuracy = calculateColorAccuracy(targetRgb, mixedRgb);
                     if (accuracy > bestAccuracy) {
                         bestAccuracy = accuracy;
                         bestRatio = [ratio1, ratio2];
                     }
                 }
-            } catch (error) {
-                // エラー時はデフォルト値を返す
-            }
-            
+            } catch (error) {}
             return { ratios: bestRatio, accuracy: bestAccuracy };
         }
 
@@ -1312,8 +1150,7 @@
                 const rDiff = Math.abs(target.r - mixed.r) / 255;
                 const gDiff = Math.abs(target.g - mixed.g) / 255;
                 const bDiff = Math.abs(target.b - mixed.b) / 255;
-                const avgDiff = (rDiff + gDiff + bDiff) / 3;
-                return Math.max(0, 1 - avgDiff);
+                return Math.max(0, 1 - (rDiff + gDiff + bDiff) / 3);
             } catch (error) {
                 return 0;
             }
@@ -1322,30 +1159,22 @@
         function switchAnalysisMode(mode, evt) {
             evt.preventDefault();
             evt.stopPropagation();
-            
             currentAnalysisMode = mode;
             document.querySelectorAll('.analysis-tab').forEach(tab => tab.classList.remove('active'));
             evt.target.classList.add('active');
-            
-            // 現在の結果色で再分析
             const currentHex = document.getElementById('hexValue').textContent;
-            if (currentHex && currentHex !== '#808080') {
-                performReverseAnalysis(currentHex);
-            }
+            if (currentHex && currentHex !== '#808080') performReverseAnalysis(currentHex);
         }
 
         function displayAnalysisResults(recipes) {
             const container = document.getElementById('analysisContent');
-            
             if (!recipes || recipes.length === 0) {
                 container.innerHTML = `<div class="no-results">${currentAnalysisMode === 'additive' ? '加法混色' : '減法混色'}での組み合わせが見つかりませんでした</div>`;
                 return;
             }
-            
             let html = '';
-            recipes.forEach((recipe, index) => {
+            recipes.forEach((recipe) => {
                 const accuracyPercent = Math.round(recipe.accuracy * 100);
-                
                 html += `
                     <div class="recipe-item">
                         <div class="recipe-header">
@@ -1366,13 +1195,10 @@
                     </div>
                 `;
             });
-            
             container.innerHTML = html;
         }
 
-        // 初期化
         function init() {
-            // 初期色を2つ追加
             createColorSlot();
             createColorSlot();
             updateSlotRatios();
@@ -1381,6 +1207,11 @@
             updateAddButton();
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const t = document.getElementById('appTitleIcon');
+            if (t) t.innerHTML = ICONS.logo;
+            init();
+        });
     </script>
 </body>
 </html>
